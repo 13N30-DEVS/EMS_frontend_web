@@ -1,0 +1,33 @@
+name: SonarQube Analysis
+
+on:
+  push:
+    branches: [ main, DEV ]
+  pull_request:
+    branches: [ main, DEV ]
+
+jobs:
+  sonarqube:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - name: Install dependencies
+        run: npm install
+      - name: SonarQube Scan
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          npm install -g sonarqube-scanner
+          sonar-scanner \
+            -Dsonar.projectKey=ems-frontend-web \
+            -Dsonar.sources=src \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.organization=your-org-key \
+            -Dsonar.login=$SONAR_TOKEN 
