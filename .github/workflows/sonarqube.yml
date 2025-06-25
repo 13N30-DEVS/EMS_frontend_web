@@ -24,6 +24,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Install additional dependencies
+        run: |
+          npm install react-router-dom
+          npm install --save-dev @types/react-router-dom
+
       - name: SonarQube Scan
         env:
           SONAR_TOKEN: ${{ secrets.EMS_FRONTEND_WEB }}
