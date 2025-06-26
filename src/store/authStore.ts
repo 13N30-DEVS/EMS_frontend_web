@@ -89,7 +89,7 @@ export const useAuthStore = create<AuthStore>()(
         } catch (error: any) {
           set({ 
             isLoading: false, 
-            error: error.message || 'Login failed' 
+            error: error.message ?? 'Login failed' 
           });
           return false;
         }
@@ -127,7 +127,7 @@ export const useAuthStore = create<AuthStore>()(
         } catch (error: any) {
           set({ 
             isLoading: false, 
-            error: error.message || 'Registration failed' 
+            error: error.message ?? 'Registration failed' 
           });
           return false;
         }
@@ -181,7 +181,7 @@ export const useAuthStore = create<AuthStore>()(
         } catch (error: any) {
           set({ 
             isLoading: false, 
-            error: error.message || 'Profile update failed' 
+            error: error.message ?? 'Profile update failed' 
           });
           return false;
         }
@@ -209,7 +209,7 @@ export const useAuthStore = create<AuthStore>()(
         } catch (error: any) {
           set({ 
             isLoading: false, 
-            error: error.message || 'Failed to fetch profile' 
+            error: error.message ?? 'Failed to fetch profile' 
           });
         }
       },

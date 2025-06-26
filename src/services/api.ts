@@ -182,7 +182,7 @@ class ApiService {
       const downloadUrl = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = downloadUrl;
-      link.download = filename || 'download';
+      link.download = filename ?? 'download';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);

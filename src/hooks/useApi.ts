@@ -43,7 +43,7 @@ const handleError = (
   options: UseApiOptions,
   setStateError: (errorMessage: string) => void
 ) => {
-  const errorMessage = error.message || 'An error occurred';
+  const errorMessage = error.message ?? 'An error occurred';
   setStateError(errorMessage);
   if (options.showErrorToast !== false) {
     handleApiError(error);
@@ -83,7 +83,7 @@ export function useApi<T = any>(
           );
           return response.data;
         }
-        throw new Error(response.message || 'Request failed');
+        throw new Error(response.message ?? 'Request failed');
       } catch (error: any) {
         if (error.name === 'AbortError') {
           return null;

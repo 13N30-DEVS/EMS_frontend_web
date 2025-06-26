@@ -44,7 +44,7 @@ export const getErrorStatus = (error: any): number => {
 };
 
 export const handleApiError = (error: any, customMessage?: string): void => {
-  const message = customMessage || getErrorMessage(error);
+  const message = customMessage ?? getErrorMessage(error);
   const status = getErrorStatus(error);
 
   // Log error for debugging

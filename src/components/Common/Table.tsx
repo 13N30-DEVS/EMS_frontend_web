@@ -7,9 +7,9 @@ export interface Column<T> {
 }
 
 interface TableProps<T> {
-  columns: Column<T>[];
-  data: T[];
-  onRowClick?: (row: T) => void;
+  readonly columns: readonly Column<T>[];
+  readonly data: readonly T[];
+  readonly onRowClick?: (row: T) => void;
 }
 
 function Table<T extends { id: React.Key }>({ columns, data, onRowClick }: TableProps<T>) {
@@ -31,7 +31,7 @@ function Table<T extends { id: React.Key }>({ columns, data, onRowClick }: Table
           >
             {columns.map(col => (
               <td key={String(col.accessor)} style={{ border: '1px solid #ddd', padding: 8 }}>
-                {col.render ? col.render(row[col.accessor], row) : row[col.accessor] as React.ReactNode}
+                {col.render ? col.render(row[col.accessor], row) : row[col.accessor] as any as React.ReactNode}
               </td>
             ))}
           </tr>
