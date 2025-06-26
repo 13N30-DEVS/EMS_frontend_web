@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef } from 'react';
 import { toast } from 'react-toastify';
 import { apiService } from '../services/api';
-import { ApiResponse, RequestConfig } from '../types/api';
+import { ApiResponse } from '../types/api';
 import { handleApiError } from '../utils/errorHandler';
 
 interface UseApiState<T> {
@@ -24,6 +24,35 @@ interface UseApiOptions {
   successMessage?: string;
 }
 
+const handleSuccess = <T>(
+  response: ApiResponse<T>,
+  options: UseApiOptions,
+  setState: (data: T) => void
+) => {
+  setState(response.data!);
+  if (options.showSuccessToast && options.successMessage) {
+    toast.success(options.successMessage);
+  }
+  if (options.onSuccess) {
+    options.onSuccess(response.data);
+  }
+};
+
+const handleError = (
+  error: any,
+  options: UseApiOptions,
+  setStateError: (errorMessage: string) => void
+) => {
+  const errorMessage = error.message || 'An error occurred';
+  setStateError(errorMessage);
+  if (options.showErrorToast !== false) {
+    handleApiError(error);
+  }
+  if (options.onError) {
+    options.onError(error);
+  }
+};
+
 export function useApi<T = any>(
   apiCall: (...args: any[]) => Promise<ApiResponse<T>>,
   options: UseApiOptions = {}
@@ -38,60 +67,30 @@ export function useApi<T = any>(
 
   const execute = useCallback(
     async (...args: any[]): Promise<T | null> => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+      abortControllerRef.current = new AbortController();
+
+      setState(prev => ({ ...prev, loading: true, error: null }));
+
       try {
-        // Cancel previous request if it exists
-        if (abortControllerRef.current) {
-          abortControllerRef.current.abort();
-        }
-
-        // Create new abort controller
-        abortControllerRef.current = new AbortController();
-
-        setState(prev => ({ ...prev, loading: true, error: null }));
-
         const response = await apiCall(...args);
 
         if (response.success && response.data) {
-          setState({
-            data: response.data,
-            loading: false,
-            error: null,
-          });
-
-          if (options.showSuccessToast && options.successMessage) {
-            toast.success(options.successMessage);
-          }
-
-          if (options.onSuccess) {
-            options.onSuccess(response.data);
-          }
-
+          handleSuccess(response, options, data =>
+            setState({ data, loading: false, error: null })
+          );
           return response.data;
-        } else {
-          throw new Error(response.message || 'Request failed');
         }
+        throw new Error(response.message || 'Request failed');
       } catch (error: any) {
-        // Don't set error if request was aborted
         if (error.name === 'AbortError') {
           return null;
         }
-
-        const errorMessage = error.message || 'An error occurred';
-        
-        setState(prev => ({
-          ...prev,
-          loading: false,
-          error: errorMessage,
-        }));
-
-        if (options.showErrorToast !== false) {
-          handleApiError(error);
-        }
-
-        if (options.onError) {
-          options.onError(error);
-        }
-
+        handleError(error, options, errorMessage =>
+          setState(prev => ({ ...prev, loading: false, error: errorMessage }))
+        );
         return null;
       } finally {
         abortControllerRef.current = null;
