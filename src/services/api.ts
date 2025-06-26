@@ -4,7 +4,7 @@ import { ApiResponse, RequestConfig } from '../types/api';
 import { handleApiError, handleNetworkError, isRetryableError } from '../utils/errorHandler';
 
 class ApiService {
-  private instance: AxiosInstance;
+  private readonly instance: AxiosInstance;
   private retryCount = 0;
 
   constructor() {
@@ -32,7 +32,7 @@ class ApiService {
         return config;
       },
       (error) => {
-        return Promise.reject(error);
+        return Promise.reject(new Error(error));
       }
     );
 
@@ -71,7 +71,7 @@ class ApiService {
           window.location.href = '/login';
         }
 
-        return Promise.reject(error);
+        return Promise.reject(new Error(error));
       }
     );
   }

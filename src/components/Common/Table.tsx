@@ -12,25 +12,25 @@ interface TableProps<T> {
   onRowClick?: (row: T) => void;
 }
 
-function Table<T extends object>({ columns, data, onRowClick }: TableProps<T>) {
+function Table<T extends { id: React.Key }>({ columns, data, onRowClick }: TableProps<T>) {
   return (
     <table style={{ width: '100%', borderCollapse: 'collapse' }}>
       <thead>
         <tr>
-          {columns.map((col, idx) => (
-            <th key={idx} style={{ border: '1px solid #ddd', padding: 8, background: '#f5f5f5' }}>{col.header}</th>
+          {columns.map(col => (
+            <th key={String(col.accessor)} style={{ border: '1px solid #ddd', padding: 8, background: '#f5f5f5' }}>{col.header}</th>
           ))}
         </tr>
       </thead>
       <tbody>
-        {data.map((row, rowIdx) => (
+        {data.map(row => (
           <tr
-            key={rowIdx}
+            key={row.id}
             onClick={onRowClick ? () => onRowClick(row) : undefined}
             style={onRowClick ? { cursor: 'pointer' } : {}}
           >
-            {columns.map((col, colIdx) => (
-              <td key={colIdx} style={{ border: '1px solid #ddd', padding: 8 }}>
+            {columns.map(col => (
+              <td key={String(col.accessor)} style={{ border: '1px solid #ddd', padding: 8 }}>
                 {col.render ? col.render(row[col.accessor], row) : row[col.accessor] as React.ReactNode}
               </td>
             ))}

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useMemo, useCallback } from 'react';
 
 interface SecurityContextProps {
   isAuthenticated: boolean;
@@ -13,21 +13,27 @@ export const SecurityProvider: React.FC<{ children: ReactNode }> = ({ children }
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRoles, setUserRoles] = useState<string[]>([]);
 
-  const login = () => {
+  const login = useCallback(() => {
     setIsAuthenticated(true);
     setUserRoles(['user']); // Example role
-  };
+  }, []);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setIsAuthenticated(false);
     setUserRoles([]);
-  };
+  }, []);
 
-  return (
-    <SecurityContext.Provider value={{ isAuthenticated, userRoles, login, logout }}>
-      {children}
-    </SecurityContext.Provider>
+  const value = useMemo(
+    () => ({
+      isAuthenticated,
+      userRoles,
+      login,
+      logout,
+    }),
+    [isAuthenticated, userRoles, login, logout]
   );
+
+  return <SecurityContext.Provider value={value}>{children}</SecurityContext.Provider>;
 };
 
 export const useSecurity = () => {
