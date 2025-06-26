@@ -1,20 +1,20 @@
 export const API_CONFIG = {
-  BASE_URL: process.env.REACT_APP_API_BASE_URL || 'https://api.example.com',
-  TIMEOUT: parseInt(process.env.REACT_APP_API_TIMEOUT || '30000'),
-  RETRY_ATTEMPTS: parseInt(process.env.REACT_APP_API_RETRY_ATTEMPTS || '3'),
-  RETRY_DELAY: parseInt(process.env.REACT_APP_API_RETRY_DELAY || '1000'),
+  BASE_URL: process.env.REACT_APP_API_BASE_URL ?? 'https://api.example.com',
+  TIMEOUT: parseInt(process.env.REACT_APP_API_TIMEOUT ?? '30000'),
+  RETRY_ATTEMPTS: parseInt(process.env.REACT_APP_API_RETRY_ATTEMPTS ?? '3'),
+  RETRY_DELAY: parseInt(process.env.REACT_APP_API_RETRY_DELAY ?? '1000'),
 };
 
 export const APP_CONFIG = {
-  NAME: process.env.REACT_APP_APP_NAME || 'React Boilerplate',
-  VERSION: process.env.REACT_APP_VERSION || '1.0.0',
+  NAME: process.env.REACT_APP_APP_NAME ?? 'React Boilerplate',
+  VERSION: process.env.REACT_APP_VERSION ?? '1.0.0',
   DEBUG_MODE: process.env.REACT_APP_ENABLE_DEBUG_MODE === 'true',
   ENABLE_ANALYTICS: process.env.REACT_APP_ENABLE_ANALYTICS === 'true',
 };
 
 export const AUTH_CONFIG = {
-  TOKEN_KEY: process.env.REACT_APP_AUTH_TOKEN_KEY || 'authToken',
-  REFRESH_TOKEN_KEY: process.env.REACT_APP_REFRESH_TOKEN_KEY || 'refreshToken',
+  TOKEN_KEY: process.env.REACT_APP_AUTH_TOKEN_KEY ?? 'authToken',
+  REFRESH_TOKEN_KEY: process.env.REACT_APP_REFRESH_TOKEN_KEY ?? 'refreshToken',
 };
 
 export const API_ENDPOINTS = {

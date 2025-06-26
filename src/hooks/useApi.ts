@@ -25,16 +25,16 @@ interface UseApiOptions {
 }
 
 const handleSuccess = <T>(
-  response: ApiResponse<T>,
+  data: T,
   options: UseApiOptions,
   setState: (data: T) => void
 ) => {
-  setState(response.data!);
+  setState(data);
   if (options.showSuccessToast && options.successMessage) {
     toast.success(options.successMessage);
   }
   if (options.onSuccess) {
-    options.onSuccess(response.data);
+    options.onSuccess(data);
   }
 };
 
@@ -78,7 +78,7 @@ export function useApi<T = any>(
         const response = await apiCall(...args);
 
         if (response.success && response.data) {
-          handleSuccess(response, options, data =>
+          handleSuccess(response.data, options, data =>
             setState({ data, loading: false, error: null })
           );
           return response.data;
