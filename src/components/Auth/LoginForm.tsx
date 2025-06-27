@@ -33,8 +33,13 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
 
     if (!formData.email) {
       newErrors.email = 'Email is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
+    } else {
+      // String-based email validation: must contain one '@' and at least one '.' after '@'
+      const atIndex = formData.email.indexOf('@');
+      const dotIndex = formData.email.lastIndexOf('.');
+      if (atIndex < 1 || dotIndex < atIndex + 2 || dotIndex === formData.email.length - 1) {
+        newErrors.email = 'Email is invalid';
+      }
     }
 
     if (!formData.password) {
