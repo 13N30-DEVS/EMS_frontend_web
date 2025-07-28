@@ -2,12 +2,10 @@ name: Build
 on:
   push:
     branches:
-      - main
       - DEV
   pull_request:
     types: [opened, synchronize, reopened]
     branches:
-      - main
       - DEV
 jobs:
   sonarqube:
