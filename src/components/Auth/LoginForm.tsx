@@ -11,15 +11,19 @@ import {
   Checkbox,
   FormControlLabel,
   Divider,
+  useMediaQuery,
 } from '@mui/material';
 import { Visibility, VisibilityOff, Lock, Email } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from '@mui/material/styles';
 
 const LoginForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const primaryColor = '#3F51B5';
   const fontFamily = `'Noto Sans', sans-serif`;
@@ -45,18 +49,18 @@ const LoginForm: React.FC = () => {
     '& .MuiInputBase-input': {
       padding: '10px 12px',
       fontFamily,
-      fontSize: 16,
+      fontSize: 14,
       fontWeight: 500,
       '::placeholder': {
-        fontSize: 13, // ✅ placeholder font size
-        fontWeight: 500, // medium weight
-        color: '#888', // light gray for placeholders
+        fontSize: 13,
+        fontWeight: 500,
+        color: '#888',
         opacity: 1,
         fontFamily,
       },
     },
     '& .MuiInputLabel-root': {
-      fontSize: 16,
+      fontSize: 14,
       fontWeight: 500,
       fontFamily,
       color: '#000',
@@ -67,7 +71,7 @@ const LoginForm: React.FC = () => {
   const linkStyles = {
     color: primaryColor,
     fontWeight: 500,
-    fontSize: 16,
+    fontSize: 14,
     fontFamily,
     cursor: 'pointer',
     '&:hover': { color: '#303F9F' },
@@ -81,10 +85,10 @@ const LoginForm: React.FC = () => {
         alignItems: 'center',
         justifyContent: 'center',
         px: { xs: 2, sm: 4 },
+        py: { xs: 3, sm: 5 },
         backgroundImage: "url('/assets/bg.jpg')",
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
         fontFamily,
       }}
     >
@@ -92,7 +96,8 @@ const LoginForm: React.FC = () => {
         elevation={6}
         sx={{
           display: 'flex',
-          maxWidth: 800,
+          flexDirection: { xs: 'column', md: 'row' }, // Responsive Layout
+          maxWidth: 900,
           width: '100%',
           borderRadius: 3,
           overflow: 'hidden',
@@ -108,17 +113,16 @@ const LoginForm: React.FC = () => {
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
-            backgroundColor: '#fff',
             gap: 1.5,
           }}
         >
           <Typography
             sx={{
-              fontSize: 24,
+              fontSize: { xs: 20, sm: 24 },
               fontWeight: 700,
               color: '#000',
               mb: 2,
-              fontFamily,
+              textAlign: { xs: 'center', md: 'left' },
             }}
           >
             Sign In
@@ -193,8 +197,10 @@ const LoginForm: React.FC = () => {
             <Box
               sx={{
                 display: 'flex',
-                alignItems: 'center',
+                flexDirection: { xs: 'column', sm: 'row' },
+                alignItems: { xs: 'flex-start', sm: 'center' },
                 justifyContent: 'space-between',
+                gap: 1,
               }}
             >
               <FormControlLabel
@@ -211,7 +217,7 @@ const LoginForm: React.FC = () => {
                   <Typography
                     sx={{
                       fontWeight: 500,
-                      fontSize: 16,
+                      fontSize: 14,
                       color: '#000',
                       fontFamily,
                     }}
@@ -220,10 +226,11 @@ const LoginForm: React.FC = () => {
                   </Typography>
                 }
               />
+
               <Link
                 component="button"
                 underline="hover"
-                sx={{linkStyles, fontWeight: 700,}}
+                sx={linkStyles}
                 onClick={() => navigate('/forgot-password')}
               >
                 Forgot Password?
@@ -243,7 +250,6 @@ const LoginForm: React.FC = () => {
                 boxShadow: `0px 4px 10px ${primaryColor}60`,
                 textTransform: 'none',
                 fontSize: 16,
-                fontFamily,
               }}
             >
               Sign In
@@ -255,17 +261,15 @@ const LoginForm: React.FC = () => {
               textAlign: 'center',
               color: '#000',
               mt: 1.5,
-              fontSize: 16,
+              fontSize: 14,
               fontWeight: 700,
-              fontFamily,
             }}
           >
             Don't have an account?{' '}
             <Link
               component="button"
               underline="hover"
-              
-              sx={{linkStyles, fontWeight: 700,}}
+              sx={linkStyles}
               onClick={() => navigate('/signup')}
             >
               Sign up
@@ -273,7 +277,8 @@ const LoginForm: React.FC = () => {
           </Typography>
         </Box>
 
-        <Divider orientation="vertical" flexItem />
+        {/* Divider — Hidden on Mobile */}
+        {!isMobile && <Divider orientation="vertical" flexItem />}
 
         {/* Right Side */}
         <Box
@@ -284,45 +289,40 @@ const LoginForm: React.FC = () => {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: '#fff',
             gap: 1,
-            fontFamily,
           }}
         >
           <Box
             component="img"
             src="/assets/image.png"
             alt="Login Illustration"
-            sx={{ width: { xs: 180, sm: 230 }, mb: 0.5 }}
+            sx={{
+              width: { xs: 150, sm: 200, md: 230 },
+              mb: 0.5,
+            }}
           />
           <Typography
             sx={{
-              fontSize: 24,
+              fontSize: { xs: 20, sm: 24 },
               fontWeight: 700,
-              color: '#000',
               textAlign: 'center',
-              fontFamily,
             }}
           >
             Welcome back!
           </Typography>
-  <Typography
-  sx={{
-    maxWidth: 450,         // wider value yields 2-line wrap
-    textAlign: 'center',
-    fontSize: 16,
-    fontWeight: 500,
-    color: '#6e6e6eff',
-    lineHeight: 1.4,
-    fontFamily,
-    margin: '0 auto',
-  }}
->
-  Please authenticate your login to continue using your personalized tools and services.
-</Typography>
-
-
-
+          <Typography
+            sx={{
+              maxWidth: 450,
+              textAlign: 'center',
+              fontSize: { xs: 14, sm: 16 },
+              fontWeight: 500,
+              color: '#6e6e6eff',
+              lineHeight: 1.4,
+              margin: '0 auto',
+            }}
+          >
+            Please authenticate your login to continue using your personalized tools and services.
+          </Typography>
         </Box>
       </Paper>
     </Box>
