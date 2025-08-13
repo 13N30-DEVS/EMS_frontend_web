@@ -12,10 +12,13 @@ import {
   FormControlLabel,
   Divider,
   useMediaQuery,
+  Alert,
+  CircularProgress,
 } from '@mui/material';
 import { Visibility, VisibilityOff, Lock, Email } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
+import { useAuthStore } from '../../store/authStore';
 
 const LoginForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -25,13 +28,19 @@ const LoginForm: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
+  const { login, isLoading, error } = useAuthStore();
+
   const primaryColor = '#3F51B5';
   const fontFamily = `'Noto Sans', sans-serif`;
 
   const toggleShowPassword = () => setShowPassword((prev) => !prev);
-  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('Login attempt:', { email, password });
+    if (!email || !password || isLoading) return;
+    const ok = await login({ email, password });
+    if (ok) {
+      navigate('/');
+    }
   };
 
   const fieldStyles = {
@@ -66,7 +75,7 @@ const LoginForm: React.FC = () => {
       color: '#000',
     },
     '& .MuiInputLabel-root.Mui-focused': { color: '#6a8ee0' },
-  };
+  } as const;
 
   const linkStyles = {
     color: primaryColor,
@@ -75,7 +84,7 @@ const LoginForm: React.FC = () => {
     fontFamily,
     cursor: 'pointer',
     '&:hover': { color: '#303F9F' },
-  };
+  } as const;
 
   return (
     <Box
@@ -129,6 +138,12 @@ const LoginForm: React.FC = () => {
             Sign In
           </Typography>
 
+          {error && (
+            <Alert severity="error" sx={{ mb: 1.5 }}>
+              {error}
+            </Alert>
+          )}
+
           <form
             onSubmit={handleLogin}
             noValidate
@@ -157,6 +172,7 @@ const LoginForm: React.FC = () => {
               type="email"
               autoComplete="email"
               required
+              disabled={isLoading}
             />
 
             <TextField
@@ -185,6 +201,7 @@ const LoginForm: React.FC = () => {
                         color: primaryColor,
                         '&:hover': { color: '#303F9F' },
                       }}
+                      disabled={isLoading}
                     >
                       {showPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
@@ -193,6 +210,7 @@ const LoginForm: React.FC = () => {
               }}
               autoComplete="current-password"
               required
+              disabled={isLoading}
             />
 
             <Box
@@ -212,6 +230,7 @@ const LoginForm: React.FC = () => {
                       color: primaryColor,
                       '&.Mui-checked': { color: primaryColor },
                     }}
+                    disabled={isLoading}
                   />
                 }
                 label={
@@ -231,9 +250,9 @@ const LoginForm: React.FC = () => {
               <Link
                 component="button"
                 underline="hover"
-                  sx={{ fontWeight: 500,}}
-          
+                sx={linkStyles}
                 onClick={() => navigate('/forgot-password')}
+                disabled={isLoading}
               >
                 Forgot Password?
               </Link>
@@ -243,6 +262,7 @@ const LoginForm: React.FC = () => {
               type="submit"
               fullWidth
               variant="contained"
+              disabled={isLoading || !email || !password}
               sx={{
                 py: 1.2,
                 backgroundColor: primaryColor,
@@ -254,7 +274,7 @@ const LoginForm: React.FC = () => {
                 fontSize: 16,
               }}
             >
-              Sign In
+              {isLoading ? <CircularProgress size={22} color="inherit" /> : 'Sign In'}
             </Button>
           </form>
 
@@ -263,17 +283,18 @@ const LoginForm: React.FC = () => {
               textAlign: 'center',
               color: '#000',
               mt: 1.5,
-                 fontSize: 16,
+              fontSize: 16,
               fontWeight: 700,
-               fontFamily,
+              fontFamily,
             }}
           >
             Don't have an account?{' '}
             <Link
               component="button"
               underline="hover"
-             sx={{ fontWeight: 700,}}
+              sx={{ fontWeight: 700 }}
               onClick={() => navigate('/signup')}
+              disabled={isLoading}
             >
               Sign up
             </Link>
@@ -304,32 +325,31 @@ const LoginForm: React.FC = () => {
               mb: 0.5,
             }}
           />
-        <Typography
-  sx={{
-    fontSize: { xs: 20, sm: 24 },
-    fontWeight: 700,
-    textAlign: 'center',
-    fontFamily: "'Noto Sans', sans-serif",
-  }}
->
-  Welcome back!
-</Typography>
+          <Typography
+            sx={{
+              fontSize: { xs: 20, sm: 24 },
+              fontWeight: 700,
+              textAlign: 'center',
+              fontFamily: "'Noto Sans', sans-serif",
+            }}
+          >
+            Welcome back!
+          </Typography>
 
-<Typography
-  sx={{
-    maxWidth: 450,
-    textAlign: 'center',
-    fontSize: { xs: 14, sm: 16 },
-    fontWeight: 500,
-    color: '#6e6e6eff',
-    lineHeight: 1.4,
-    margin: '0 auto',
-    fontFamily: "'Noto Sans', sans-serif",
-  }}
->
-  Please authenticate your login to continue using your personalized tools and services.
-</Typography>
-
+          <Typography
+            sx={{
+              maxWidth: 450,
+              textAlign: 'center',
+              fontSize: { xs: 14, sm: 16 },
+              fontWeight: 500,
+              color: '#6e6e6eff',
+              lineHeight: 1.4,
+              margin: '0 auto',
+              fontFamily: "'Noto Sans', sans-serif",
+            }}
+          >
+            Please authenticate your login to continue using your personalized tools and services.
+          </Typography>
         </Box>
       </Paper>
     </Box>

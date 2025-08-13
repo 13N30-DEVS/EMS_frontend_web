@@ -148,8 +148,6 @@ const SignUpPage: React.FC = () => {
 </Typography>
 
 </Box>
-
-
         {/* Divider */}
         <Divider
           orientation="vertical"
