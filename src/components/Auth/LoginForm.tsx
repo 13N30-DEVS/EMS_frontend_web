@@ -1,213 +1,359 @@
 import React, { useState } from 'react';
 import {
   Box,
-  Button,
-  TextField,
-  Typography,
   Paper,
-  Alert,
-  CircularProgress,
+  Typography,
+  TextField,
+  Button,
   Link,
   InputAdornment,
   IconButton,
+  Checkbox,
+  FormControlLabel,
+  Divider,
+  useMediaQuery,
+  Alert,
+  CircularProgress,
 } from '@mui/material';
-import { Visibility, VisibilityOff, Email, Lock } from '@mui/icons-material';
+import { Visibility, VisibilityOff, Lock, Email } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
+import { useTheme } from '@mui/material/styles';
 import { useAuthStore } from '../../store/authStore';
 
-interface LoginFormProps {
-  onSwitchToRegister?: () => void;
-}
-
-export const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
+const LoginForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const { login, isLoading, error, clearError } = useAuthStore();
+  const { login, isLoading, error } = useAuthStore();
 
-  const validateForm = (): boolean => {
-    const newErrors: Record<string, string> = {};
+  const primaryColor = '#3F51B5';
+  const fontFamily = `'Noto Sans', sans-serif`;
 
-    if (!formData.email) {
-      newErrors.email = 'Email is required';
-    } else {
-      // String-based email validation: must contain one '@' and at least one '.' after '@'
-      const atIndex = formData.email.indexOf('@');
-      const dotIndex = formData.email.lastIndexOf('.');
-      if (atIndex < 1 || dotIndex < atIndex + 2 || dotIndex === formData.email.length - 1) {
-        newErrors.email = 'Email is invalid';
-      }
-    }
-
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    
-    // Clear error when user starts typing
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
-    }
-    
-    // Clear auth error when user starts typing
-    if (error) {
-      clearError();
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const toggleShowPassword = () => setShowPassword((prev) => !prev);
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
-    if (!validateForm()) {
-      return;
-    }
-
-    const success = await login(formData);
-    if (success) {
-      // Redirect or handle successful login
-      console.log('Login successful');
+    if (!email || !password || isLoading) return;
+    const ok = await login({ email, password });
+    if (ok) {
+      navigate('/');
     }
   };
 
-  const handleTogglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
+  const fieldStyles = {
+    mb: 2,
+    '& .MuiOutlinedInput-root': {
+      borderRadius: 3,
+      transition: 'all 0.3s ease',
+      backgroundColor: '#fafafa',
+      '&:hover fieldset': { borderColor: primaryColor },
+      '&.Mui-focused fieldset': {
+        borderColor: '#6a8ee0',
+        boxShadow: '0 0 4px rgba(106,142,224,0.2)',
+      },
+    },
+    '& .MuiInputBase-input': {
+      padding: '10px 12px',
+      fontFamily,
+      fontSize: 14,
+      fontWeight: 500,
+      '::placeholder': {
+        fontSize: 13,
+        fontWeight: 500,
+        color: '#888',
+        opacity: 1,
+        fontFamily,
+      },
+    },
+    '& .MuiInputLabel-root': {
+      fontSize: 14,
+      fontWeight: 500,
+      fontFamily,
+      color: '#000',
+    },
+    '& .MuiInputLabel-root.Mui-focused': { color: '#6a8ee0' },
+  } as const;
+
+  const linkStyles = {
+    color: primaryColor,
+    fontWeight: 500,
+    fontSize: 14,
+    fontFamily,
+    cursor: 'pointer',
+    '&:hover': { color: '#303F9F' },
+  } as const;
 
   return (
     <Box
       sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
         minHeight: '100vh',
-        backgroundColor: 'background.default',
-        p: 2,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        px: { xs: 2, sm: 4 },
+        py: { xs: 3, sm: 5 },
+        backgroundImage: "url('/assets/bg.jpg')",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        fontFamily,
       }}
     >
       <Paper
-        elevation={3}
+        elevation={6}
         sx={{
-          p: 4,
+          display: 'flex',
+          flexDirection: { xs: 'column', md: 'row' }, // Responsive Layout
+          maxWidth: 900,
           width: '100%',
-          maxWidth: 400,
-          borderRadius: 2,
+          borderRadius: 3,
+          overflow: 'hidden',
+          backgroundColor: '#fff',
+          boxShadow: '0 8px 16px rgba(0,0,0,0.1)',
         }}
       >
-        <Box sx={{ textAlign: 'center', mb: 3 }}>
-          <Typography variant="h4" component="h1" gutterBottom>
-            Welcome Back
+        {/* Left Side */}
+        <Box
+          sx={{
+            flex: 1,
+            p: { xs: 3, sm: 4 },
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            gap: 1.5,
+          }}
+        >
+          <Typography
+            sx={{
+              fontSize: { xs: 20, sm: 24 },
+              fontWeight: 700,
+              color: '#000',
+              fontFamily: "'Noto Sans', sans-serif",
+              mb: 2,
+              textAlign: { xs: 'center', md: 'left' },
+            }}
+          >
+            Sign In
           </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Sign in to your account
+
+          {error && (
+            <Alert severity="error" sx={{ mb: 1.5 }}>
+              {error}
+            </Alert>
+          )}
+
+          <form
+            onSubmit={handleLogin}
+            noValidate
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 14,
+            }}
+          >
+            <TextField
+              id="email-input"
+              fullWidth
+              label="Email Address"
+              placeholder="Enter your email"
+              variant="outlined"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              sx={fieldStyles}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Email sx={{ color: primaryColor }} />
+                  </InputAdornment>
+                ),
+              }}
+              type="email"
+              autoComplete="email"
+              required
+              disabled={isLoading}
+            />
+
+            <TextField
+              id="password-input"
+              fullWidth
+              label="Password"
+              placeholder="Enter your password"
+              variant="outlined"
+              type={showPassword ? 'text' : 'password'}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              sx={fieldStyles}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Lock sx={{ color: primaryColor }} />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={toggleShowPassword}
+                      edge="end"
+                      size="small"
+                      sx={{
+                        color: primaryColor,
+                        '&:hover': { color: '#303F9F' },
+                      }}
+                      disabled={isLoading}
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              autoComplete="current-password"
+              required
+              disabled={isLoading}
+            />
+
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: { xs: 'column', sm: 'row' },
+                alignItems: { xs: 'flex-start', sm: 'center' },
+                justifyContent: 'space-between',
+                gap: 1,
+              }}
+            >
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    size="small"
+                    sx={{
+                      color: primaryColor,
+                      '&.Mui-checked': { color: primaryColor },
+                    }}
+                    disabled={isLoading}
+                  />
+                }
+                label={
+                  <Typography
+                    sx={{
+                      fontWeight: 500,
+                      fontSize: 14,
+                      color: '#000',
+                      fontFamily,
+                    }}
+                  >
+                    Remember Me
+                  </Typography>
+                }
+              />
+
+              <Link
+                component="button"
+                underline="hover"
+                sx={linkStyles}
+                onClick={() => navigate('/forgot-password')}
+                disabled={isLoading}
+              >
+                Forgot Password?
+              </Link>
+            </Box>
+
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              disabled={isLoading || !email || !password}
+              sx={{
+                py: 1.2,
+                backgroundColor: primaryColor,
+                '&:hover': { backgroundColor: '#303F9F' },
+                fontWeight: 700,
+                borderRadius: 2,
+                boxShadow: `0px 4px 10px ${primaryColor}60`,
+                textTransform: 'none',
+                fontSize: 16,
+              }}
+            >
+              {isLoading ? <CircularProgress size={22} color="inherit" /> : 'Sign In'}
+            </Button>
+          </form>
+
+          <Typography
+            sx={{
+              textAlign: 'center',
+              color: '#000',
+              mt: 1.5,
+              fontSize: 16,
+              fontWeight: 700,
+              fontFamily,
+            }}
+          >
+            Don't have an account?{' '}
+            <Link
+              component="button"
+              underline="hover"
+              sx={{ fontWeight: 700 }}
+              onClick={() => navigate('/signup')}
+              disabled={isLoading}
+            >
+              Sign up
+            </Link>
           </Typography>
         </Box>
 
-        {error && (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            {error}
-          </Alert>
-        )}
+        {/* Divider — Hidden on Mobile */}
+        {!isMobile && <Divider orientation="vertical" flexItem />}
 
-        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
-            value={formData.email}
-            onChange={(e) => handleInputChange('email', e.target.value)}
-            error={!!errors.email}
-            helperText={errors.email}
-            inputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Email color="action" />
-                </InputAdornment>
-              ),
+        {/* Right Side */}
+        <Box
+          sx={{
+            flex: 0.8,
+            p: { xs: 2.5, sm: 5 },
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 1,
+          }}
+        >
+          <Box
+            component="img"
+            src="/assets/image.png"
+            alt="Login Illustration"
+            sx={{
+              width: { xs: 150, sm: 200, md: 230 },
+              mb: 0.5,
             }}
-            disabled={isLoading}
           />
-
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type={showPassword ? 'text' : 'password'}
-            id="password"
-            autoComplete="current-password"
-            value={formData.password}
-            onChange={(e) => handleInputChange('password', e.target.value)}
-            error={!!errors.password}
-            helperText={errors.password}
-            inputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Lock color="action" />
-                </InputAdornment>
-              ),
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleTogglePasswordVisibility}
-                    edge="end"
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              ),
+          <Typography
+            sx={{
+              fontSize: { xs: 20, sm: 24 },
+              fontWeight: 700,
+              textAlign: 'center',
+              fontFamily: "'Noto Sans', sans-serif",
             }}
-            disabled={isLoading}
-          />
-
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2, py: 1.5 }}
-            disabled={isLoading}
           >
-            {isLoading ? (
-              <CircularProgress size={24} color="inherit" />
-            ) : (
-              'Sign In'
-            )}
-          </Button>
+            Welcome back!
+          </Typography>
 
-          {onSwitchToRegister && (
-            <Box sx={{ textAlign: 'center' }}>
-              <Typography variant="body2">
-                Don't have an account?{' '}
-                <Link
-                  component="button"
-                  variant="body2"
-                  onClick={onSwitchToRegister}
-                  sx={{ cursor: 'pointer' }}
-                >
-                  Sign up
-                </Link>
-              </Typography>
-            </Box>
-          )}
+          <Typography
+            sx={{
+              maxWidth: 450,
+              textAlign: 'center',
+              fontSize: { xs: 14, sm: 16 },
+              fontWeight: 500,
+              color: '#6e6e6eff',
+              lineHeight: 1.4,
+              margin: '0 auto',
+              fontFamily: "'Noto Sans', sans-serif",
+            }}
+          >
+            Please authenticate your login to continue using your personalized tools and services.
+          </Typography>
         </Box>
       </Paper>
     </Box>
   );
-}; 
+};
+
+export default LoginForm;
