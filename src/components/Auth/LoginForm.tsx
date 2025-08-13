@@ -121,6 +121,7 @@ const LoginForm: React.FC = () => {
               fontSize: { xs: 20, sm: 24 },
               fontWeight: 700,
               color: '#000',
+              fontFamily: "'Noto Sans', sans-serif",
               mb: 2,
               textAlign: { xs: 'center', md: 'left' },
             }}
@@ -230,7 +231,8 @@ const LoginForm: React.FC = () => {
               <Link
                 component="button"
                 underline="hover"
-                sx={linkStyles}
+                  sx={{ fontWeight: 500,}}
+          
                 onClick={() => navigate('/forgot-password')}
               >
                 Forgot Password?
@@ -261,15 +263,16 @@ const LoginForm: React.FC = () => {
               textAlign: 'center',
               color: '#000',
               mt: 1.5,
-              fontSize: 14,
+                 fontSize: 16,
               fontWeight: 700,
+               fontFamily,
             }}
           >
             Don't have an account?{' '}
             <Link
               component="button"
               underline="hover"
-              sx={linkStyles}
+             sx={{ fontWeight: 700,}}
               onClick={() => navigate('/signup')}
             >
               Sign up
@@ -301,28 +304,32 @@ const LoginForm: React.FC = () => {
               mb: 0.5,
             }}
           />
-          <Typography
-            sx={{
-              fontSize: { xs: 20, sm: 24 },
-              fontWeight: 700,
-              textAlign: 'center',
-            }}
-          >
-            Welcome back!
-          </Typography>
-          <Typography
-            sx={{
-              maxWidth: 450,
-              textAlign: 'center',
-              fontSize: { xs: 14, sm: 16 },
-              fontWeight: 500,
-              color: '#6e6e6eff',
-              lineHeight: 1.4,
-              margin: '0 auto',
-            }}
-          >
-            Please authenticate your login to continue using your personalized tools and services.
-          </Typography>
+        <Typography
+  sx={{
+    fontSize: { xs: 20, sm: 24 },
+    fontWeight: 700,
+    textAlign: 'center',
+    fontFamily: "'Noto Sans', sans-serif",
+  }}
+>
+  Welcome back!
+</Typography>
+
+<Typography
+  sx={{
+    maxWidth: 450,
+    textAlign: 'center',
+    fontSize: { xs: 14, sm: 16 },
+    fontWeight: 500,
+    color: '#6e6e6eff',
+    lineHeight: 1.4,
+    margin: '0 auto',
+    fontFamily: "'Noto Sans', sans-serif",
+  }}
+>
+  Please authenticate your login to continue using your personalized tools and services.
+</Typography>
+
         </Box>
       </Paper>
     </Box>

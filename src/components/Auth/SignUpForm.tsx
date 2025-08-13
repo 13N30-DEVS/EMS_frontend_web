@@ -120,7 +120,7 @@ const SignUpPage: React.FC = () => {
 
   <Typography
     sx={{
-      fontSize: 16,
+      fontSize: 24,
       fontWeight: 700,
       color: '#000',
       textAlign: 'center',
@@ -129,7 +129,7 @@ const SignUpPage: React.FC = () => {
       fontFamily,
     }}
   >
-    Let’s build something great together
+   Build something great.
   </Typography>
   <Typography
   sx={{
@@ -183,21 +183,21 @@ const SignUpPage: React.FC = () => {
             Sign Up
           </Typography>
 
-          <Typography
+       <Typography
   sx={{
-    fontSize: 16,
+    fontSize: { xs: 13, sm: 16 },
     fontWeight: 500,
     color: '#555',
     mb: 3,
     lineHeight: 1.5,
     fontFamily,
-    whiteSpace: 'nowrap',      // prevent wrapping
-    overflow: 'hidden',        // hides overflow text
-    textOverflow: 'ellipsis',  // adds ellipsis for overflow
+    whiteSpace: 'normal',     // Let text wrap normally
+         
   }}
 >
   Please enter your email address to create a new account.
 </Typography>
+
 
           <TextField
             id="email-input"

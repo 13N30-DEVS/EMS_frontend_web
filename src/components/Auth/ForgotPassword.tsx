@@ -243,7 +243,6 @@ const ForgotPassword: React.FC = () => {
               component="button"
               onClick={() => navigate('/login')}
               underline="hover"
-              fontWeight={700}
           sx={{ fontWeight: 700,}}
             >
               Sign In
