@@ -63,7 +63,10 @@ export const useAuthStore = create<AuthStore>()(
 
           const response = await apiService.post<{ user: User; token: string }>(
             API_ENDPOINTS.AUTH.LOGIN,
-            credentials
+            {
+              emailId: credentials.email,
+              password: credentials.password
+            }
           );
 
           if (response.success && response.data) {
