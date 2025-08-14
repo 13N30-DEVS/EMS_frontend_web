@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import {
   Box,
   Paper,
@@ -61,8 +61,6 @@ const useFieldStyles = () => {
   }), []);
 };
 
-
-
 // Memoized button styles
 const useButtonStyles = () => {
   return useMemo(() => ({
@@ -74,6 +72,7 @@ const useButtonStyles = () => {
     boxShadow: `0px 4px 10px ${PRIMARY_COLOR}60`,
     textTransform: 'none' as const,
     fontSize: 16,
+    minHeight: { xs: 48, sm: 40 }, // Better touch targets on mobile
   }), []);
 };
 
@@ -111,17 +110,70 @@ const LoginForm: React.FC = React.memo(() => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [attempts, setAttempts] = useState(0);
+  const [locked, setLocked] = useState(false);
+  
   const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
-  const { login, isLoading, error } = useAuthStore();
+  
+  // Connect to auth store
+  const { login, isLoading, error, clearError } = useAuthStore();
 
   // Memoized styles
   const fieldStyles = useFieldStyles();
   const buttonStyles = useButtonStyles();
   const containerStyles = useContainerStyles();
   const paperStyles = usePaperStyles();
+
+  // Clear errors when user types
+  useEffect(() => {
+    if (errors.email && email) {
+      setErrors(prev => ({ ...prev, email: undefined }));
+    }
+    if (errors.password && password) {
+      setErrors(prev => ({ ...prev, password: undefined }));
+    }
+  }, [email, password, errors]);
+
+  // Clear auth store error when component mounts
+  useEffect(() => {
+    clearError();
+  }, [clearError]);
+
+  // Rate limiting: Lock form after 5 failed attempts
+  useEffect(() => {
+    if (attempts >= 5) {
+      setLocked(true);
+      const timer = setTimeout(() => {
+        setLocked(false);
+        setAttempts(0);
+      }, 300000); // 5 minutes
+      return () => clearTimeout(timer);
+    }
+  }, [attempts]);
+
+  // Form validation
+  const validateForm = useCallback(() => {
+    const newErrors: { email?: string; password?: string } = {};
+    
+    if (!email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(email.trim())) {
+      newErrors.email = 'Please enter a valid email address';
+    }
+    
+    if (!password) {
+      newErrors.password = 'Password is required';
+    } else if (password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  }, [email, password]);
 
   // Memoized event handlers
   const toggleShowPassword = useCallback(() => {
@@ -130,12 +182,27 @@ const LoginForm: React.FC = React.memo(() => {
 
   const handleLogin = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!email || !password || isLoading) return;
-    const ok = await login({ email, password });
-    if (ok) {
-      navigate('/');
+    
+    if (locked) {
+      return;
     }
-  }, [email, password, isLoading, login, navigate]);
+    
+    if (!validateForm()) {
+      return;
+    }
+    
+    try {
+      const success = await login({ email: email.trim(), password });
+      if (success) {
+        setShowSuccess(true);
+        setTimeout(() => navigate('/'), 1500); // Show success message briefly
+      } else {
+        setAttempts(prev => prev + 1);
+      }
+    } catch (err) {
+      setAttempts(prev => prev + 1);
+    }
+  }, [email, password, login, navigate, locked, validateForm]);
 
   const handleForgotPassword = useCallback(() => {
     navigate('/forgot-password');
@@ -236,6 +303,9 @@ const LoginForm: React.FC = React.memo(() => {
     fontFamily: FONT_FAMILY,
   }), []);
 
+  // Check if form is disabled
+  const isFormDisabled = isLoading || locked;
+
   return (
     <Box sx={containerStyles}>
       <Paper elevation={6} sx={paperStyles}>
@@ -245,9 +315,30 @@ const LoginForm: React.FC = React.memo(() => {
             Sign In
           </Typography>
 
+          {/* Success Message */}
+          {showSuccess && (
+            <Alert severity="success" sx={{ mb: 1.5 }}>
+              Login successful! Redirecting...
+            </Alert>
+          )}
+
+          {/* Error Message */}
           {error && (
-            <Alert severity="error" sx={{ mb: 1.5 }}>
-              {error}
+            <Alert 
+              severity="error" 
+              sx={{ mb: 1.5 }}
+              onClose={() => clearError()}
+            >
+              <Typography variant="body2">
+                {error === 'Invalid credentials' ? 'Email or password is incorrect' : error}
+              </Typography>
+            </Alert>
+          )}
+
+          {/* Rate Limit Warning */}
+          {locked && (
+            <Alert severity="warning" sx={{ mb: 1.5 }}>
+              Too many failed attempts. Please try again in 5 minutes.
             </Alert>
           )}
 
@@ -261,6 +352,9 @@ const LoginForm: React.FC = React.memo(() => {
               value={email}
               onChange={handleEmailChange}
               sx={fieldStyles}
+              error={!!errors.email}
+              helperText={errors.email}
+              disabled={isFormDisabled}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -271,6 +365,7 @@ const LoginForm: React.FC = React.memo(() => {
               type="email"
               autoComplete="email"
               required
+              aria-describedby={errors.email ? "email-error" : undefined}
             />
 
             <TextField
@@ -283,6 +378,9 @@ const LoginForm: React.FC = React.memo(() => {
               value={password}
               onChange={handlePasswordChange}
               sx={fieldStyles}
+              error={!!errors.password}
+              helperText={errors.password}
+              disabled={isFormDisabled}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -295,6 +393,7 @@ const LoginForm: React.FC = React.memo(() => {
                       onClick={toggleShowPassword}
                       edge="end"
                       size="small"
+                      disabled={isFormDisabled}
                       sx={{
                         color: PRIMARY_COLOR,
                         '&:hover': { color: '#303F9F' },
@@ -307,6 +406,7 @@ const LoginForm: React.FC = React.memo(() => {
               }}
               autoComplete="current-password"
               required
+              aria-describedby={errors.password ? "password-error" : undefined}
             />
 
             <Box sx={checkboxContainerStyles}>
@@ -314,6 +414,7 @@ const LoginForm: React.FC = React.memo(() => {
                 control={
                   <Checkbox
                     size="small"
+                    disabled={isFormDisabled}
                     sx={{
                       color: PRIMARY_COLOR,
                       '&.Mui-checked': { color: PRIMARY_COLOR },
@@ -339,6 +440,7 @@ const LoginForm: React.FC = React.memo(() => {
                 underline="hover"
                 sx={{ fontWeight: 500 }}
                 onClick={handleForgotPassword}
+                disabled={isFormDisabled}
               >
                 Forgot Password?
               </Link>
@@ -348,6 +450,7 @@ const LoginForm: React.FC = React.memo(() => {
               type="submit"
               fullWidth
               variant="contained"
+              disabled={isFormDisabled || !email.trim() || !password}
               sx={buttonStyles}
             >
               {isLoading ? <CircularProgress size={22} color="inherit" /> : 'Sign In'}
@@ -361,6 +464,7 @@ const LoginForm: React.FC = React.memo(() => {
               underline="hover"
               sx={{ fontWeight: 700 }}
               onClick={handleSignUp}
+              disabled={isFormDisabled}
             >
               Sign up
             </Link>
