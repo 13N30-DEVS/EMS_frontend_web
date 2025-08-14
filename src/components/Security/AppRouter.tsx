@@ -4,9 +4,14 @@ import { Box } from "@mui/material";
 
 import LoginForm from "../Auth/LoginForm";
 import SignupForm from "../Auth/SignUpForm";
+import WorkspaceSetup from "../Auth/Workspace";
+import SetupWizard from "../Workspace/SetupWizard";
 import ForgotPassword from "../Auth/ForgotPassword";
 import { AppLayout } from "../Layout/AppLayout";
 import { useAuthStore } from "../../store/authStore";
+import Departments from "../Workspace/Departments";
+import Designations from "../Workspace/Designations";
+import Shifts from "../Workspace/Shifts";
 
 const AppRouter: React.FC = () => {
 	const { isAuthenticated, user } = useAuthStore();
@@ -18,6 +23,11 @@ const AppRouter: React.FC = () => {
 					<>
 						<Route path="/login" element={<LoginForm />} />
 						<Route path="/signup" element={<SignupForm />} />
+                        <Route path="/workspace" element={<WorkspaceSetup />} />
+                        <Route path="/workspace/setup" element={<SetupWizard />} />
+                        <Route path="/workspace/departments" element={<Departments />} />
+                        <Route path="/workspace/designations" element={<Designations />} />
+                        <Route path="/workspace/shifts" element={<Shifts />} />
 						<Route path="/forgot-password" element={<ForgotPassword />} />
 						<Route path="*" element={<Navigate to="/login" replace />} />
 					</>
@@ -27,24 +37,15 @@ const AppRouter: React.FC = () => {
 							path="/"
 							element={
 								<AppLayout title="Dashboard">
-									<Box sx={{ p: 3 }}>
-										<h1>Welcome to Your App!</h1>
-										<p>You are logged in as: {user?.name}</p>
-										<p>This is a production-ready React application with:</p>
-										<ul>
-											<li>React with TypeScript</li>
-											<li>Material-UI for beautiful components</li>
-											<li>Zustand for state management</li>
-											<li>Axios for API calls with retry logic</li>
-											<li>React-Toastify for notifications</li>
-											<li>Comprehensive error handling</li>
-											<li>Authentication system</li>
-											<li>Responsive layout</li>
-										</ul>
-									</Box>
+									<Box>Dashboard</Box>
 								</AppLayout>
 							}
 						/>
+                        <Route path="/workspace" element={<WorkspaceSetup />} />
+                        <Route path="/workspace/setup" element={<SetupWizard />} />
+                        <Route path="/workspace/departments" element={<Departments />} />
+                        <Route path="/workspace/designations" element={<Designations />} />
+                        <Route path="/workspace/shifts" element={<Shifts />} />
 						<Route path="*" element={<Navigate to="/" replace />} />
 					</>
 				)}

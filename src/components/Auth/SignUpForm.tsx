@@ -61,7 +61,7 @@ const SignUpPage: React.FC = () => {
       return;
     }
     // API call here
-    navigate('/welcome');
+    navigate('/workspace');
   };
 
   return (
