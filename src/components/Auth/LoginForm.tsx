@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import { Visibility, VisibilityOff, Lock, Email } from '@mui/icons-material';
 import {
   Box,
   Paper,
@@ -15,9 +15,10 @@ import {
   Alert,
   CircularProgress,
 } from '@mui/material';
-import { Visibility, VisibilityOff, Lock, Email } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import { useAuthStore } from '../../store/authStore';
 
 // Memoized constants to prevent recreation
@@ -26,99 +27,113 @@ const FONT_FAMILY = `'Noto Sans', sans-serif`;
 
 // Memoized field styles
 const useFieldStyles = () => {
-  return useMemo(() => ({
-    mb: 2,
-    '& .MuiOutlinedInput-root': {
-      borderRadius: 3,
-      transition: 'all 0.3s ease',
-      backgroundColor: '#fafafa',
-      '&:hover fieldset': { borderColor: PRIMARY_COLOR },
-      '&.Mui-focused fieldset': {
-        borderColor: '#6a8ee0',
-        boxShadow: '0 0 4px rgba(106,142,224,0.2)',
+  return useMemo(
+    () => ({
+      mb: 2,
+      '& .MuiOutlinedInput-root': {
+        borderRadius: 3,
+        transition: 'all 0.3s ease',
+        backgroundColor: '#fafafa',
+        '&:hover fieldset': { borderColor: PRIMARY_COLOR },
+        '&.Mui-focused fieldset': {
+          borderColor: '#6a8ee0',
+          boxShadow: '0 0 4px rgba(106,142,224,0.2)',
+        },
       },
-    },
-    '& .MuiInputBase-input': {
-      padding: '10px 12px',
-      fontFamily: FONT_FAMILY,
-      fontSize: 14,
-      fontWeight: 500,
-      '::placeholder': {
-        fontSize: 13,
-        fontWeight: 500,
-        color: '#888',
-        opacity: 1,
+      '& .MuiInputBase-input': {
+        padding: '10px 12px',
         fontFamily: FONT_FAMILY,
+        fontSize: 14,
+        fontWeight: 500,
+        '::placeholder': {
+          fontSize: 13,
+          fontWeight: 500,
+          color: '#888',
+          opacity: 1,
+          fontFamily: FONT_FAMILY,
+        },
       },
-    },
-    '& .MuiInputLabel-root': {
-      fontSize: 14,
-      fontWeight: 500,
-      fontFamily: FONT_FAMILY,
-      color: '#000',
-    },
-    '& .MuiInputLabel-root.Mui-focused': { color: '#6a8ee0' },
-  }), []);
+      '& .MuiInputLabel-root': {
+        fontSize: 14,
+        fontWeight: 500,
+        fontFamily: FONT_FAMILY,
+        color: '#000',
+      },
+      '& .MuiInputLabel-root.Mui-focused': { color: '#6a8ee0' },
+    }),
+    []
+  );
 };
 
 // Memoized button styles
 const useButtonStyles = () => {
-  return useMemo(() => ({
-    py: 1.2,
-    backgroundColor: PRIMARY_COLOR,
-    '&:hover': { backgroundColor: '#303F9F' },
-    fontWeight: 700,
-    borderRadius: 2,
-    boxShadow: `0px 4px 10px ${PRIMARY_COLOR}60`,
-    textTransform: 'none' as const,
-    fontSize: 16,
-    minHeight: { xs: 48, sm: 40 }, // Better touch targets on mobile
-  }), []);
+  return useMemo(
+    () => ({
+      py: 1.2,
+      backgroundColor: PRIMARY_COLOR,
+      '&:hover': { backgroundColor: '#303F9F' },
+      fontWeight: 700,
+      borderRadius: 2,
+      boxShadow: `0px 4px 10px ${PRIMARY_COLOR}60`,
+      textTransform: 'none' as const,
+      fontSize: 16,
+      minHeight: { xs: 48, sm: 40 }, // Better touch targets on mobile
+    }),
+    []
+  );
 };
 
 // Memoized container styles
 const useContainerStyles = () => {
-  return useMemo(() => ({
-    minHeight: '100vh',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    px: { xs: 2, sm: 4 },
-    py: { xs: 3, sm: 5 },
-    backgroundImage: "url('/assets/bg.jpg')",
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    fontFamily: FONT_FAMILY,
-  }), []);
+  return useMemo(
+    () => ({
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      px: { xs: 2, sm: 4 },
+      py: { xs: 3, sm: 5 },
+      backgroundImage: "url('/assets/bg.jpg')",
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      fontFamily: FONT_FAMILY,
+    }),
+    []
+  );
 };
 
 // Memoized paper styles
 const usePaperStyles = () => {
-  return useMemo(() => ({
-    display: 'flex',
-    flexDirection: { xs: 'column', md: 'row' },
-    maxWidth: 900,
-    width: '100%',
-    borderRadius: 3,
-    overflow: 'hidden',
-    backgroundColor: '#fff',
-    boxShadow: '0 8px 16px rgba(0,0,0,0.1)',
-  }), []);
+  return useMemo(
+    () => ({
+      display: 'flex',
+      flexDirection: { xs: 'column', md: 'row' },
+      maxWidth: 900,
+      width: '100%',
+      borderRadius: 3,
+      overflow: 'hidden',
+      backgroundColor: '#fff',
+      boxShadow: '0 8px 16px rgba(0,0,0,0.1)',
+    }),
+    []
+  );
 };
 
 const LoginForm: React.FC = React.memo(() => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>(
+    {}
+  );
   const [showSuccess, setShowSuccess] = useState(false);
   const [attempts, setAttempts] = useState(0);
   const [locked, setLocked] = useState(false);
-  
+
   const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  
+
   // Connect to auth store
   const { login, isLoading, error, clearError } = useAuthStore();
 
@@ -131,10 +146,10 @@ const LoginForm: React.FC = React.memo(() => {
   // Clear errors when user types
   useEffect(() => {
     if (errors.email && email) {
-      setErrors(prev => ({ ...prev, email: undefined }));
+      setErrors(prev => ({ ...prev, email: '' }));
     }
     if (errors.password && password) {
-      setErrors(prev => ({ ...prev, password: undefined }));
+      setErrors(prev => ({ ...prev, password: '' }));
     }
   }, [email, password, errors]);
 
@@ -158,51 +173,54 @@ const LoginForm: React.FC = React.memo(() => {
   // Form validation
   const validateForm = useCallback(() => {
     const newErrors: { email?: string; password?: string } = {};
-    
+
     if (!email.trim()) {
       newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(email.trim())) {
       newErrors.email = 'Please enter a valid email address';
     }
-    
+
     if (!password) {
       newErrors.password = 'Password is required';
     } else if (password.length < 6) {
       newErrors.password = 'Password must be at least 6 characters';
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   }, [email, password]);
 
   // Memoized event handlers
   const toggleShowPassword = useCallback(() => {
-    setShowPassword((prev) => !prev);
+    setShowPassword(prev => !prev);
   }, []);
 
-  const handleLogin = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    
-    if (locked) {
-      return;
-    }
-    
-    if (!validateForm()) {
-      return;
-    }
-    
-    try {
-      const success = await login({ email: email.trim(), password });
-      if (success) {
-        setShowSuccess(true);
-        setTimeout(() => navigate('/'), 1500); // Show success message briefly
-      } else {
+  const handleLogin = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+
+      if (locked) {
+        return;
+      }
+
+      if (!validateForm()) {
+        return;
+      }
+
+      try {
+        const success = await login({ email: email.trim(), password });
+        if (success) {
+          setShowSuccess(true);
+          setTimeout(() => navigate('/'), 1500); // Show success message briefly
+        } else {
+          setAttempts(prev => prev + 1);
+        }
+      } catch (err) {
         setAttempts(prev => prev + 1);
       }
-    } catch (err) {
-      setAttempts(prev => prev + 1);
-    }
-  }, [email, password, login, navigate, locked, validateForm]);
+    },
+    [email, password, login, navigate, locked, validateForm]
+  );
 
   const handleForgotPassword = useCallback(() => {
     navigate('/forgot-password');
@@ -212,96 +230,129 @@ const LoginForm: React.FC = React.memo(() => {
     navigate('/signup');
   }, [navigate]);
 
-  const handleEmailChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-  }, []);
+  const handleEmailChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setEmail(e.target.value);
+    },
+    []
+  );
 
-  const handlePasswordChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
-  }, []);
+  const handlePasswordChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setPassword(e.target.value);
+    },
+    []
+  );
 
   // Memoized form styles
-  const formStyles = useMemo(() => ({
-    display: 'flex',
-    flexDirection: 'column' as const,
-    gap: 14,
-  }), []);
+  const formStyles = useMemo(
+    () => ({
+      display: 'flex',
+      flexDirection: 'column' as const,
+      gap: 14,
+    }),
+    []
+  );
 
   // Memoized checkbox container styles
-  const checkboxContainerStyles = useMemo(() => ({
-    display: 'flex',
-    flexDirection: { xs: 'column', sm: 'row' },
-    alignItems: { xs: 'flex-start', sm: 'center' },
-    justifyContent: 'space-between',
-    gap: 1,
-  }), []);
+  const checkboxContainerStyles = useMemo(
+    () => ({
+      display: 'flex',
+      flexDirection: { xs: 'column', sm: 'row' },
+      alignItems: { xs: 'flex-start', sm: 'center' },
+      justifyContent: 'space-between',
+      gap: 1,
+    }),
+    []
+  );
 
   // Memoized left side styles
-  const leftSideStyles = useMemo(() => ({
-    flex: 1,
-    p: { xs: 3, sm: 4 },
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    gap: 1.5,
-  }), []);
+  const leftSideStyles = useMemo(
+    () => ({
+      flex: 1,
+      p: { xs: 3, sm: 4 },
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      gap: 1.5,
+    }),
+    []
+  );
 
   // Memoized right side styles
-  const rightSideStyles = useMemo(() => ({
-    flex: 0.8,
-    p: { xs: 2.5, sm: 5 },
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 1,
-  }), []);
+  const rightSideStyles = useMemo(
+    () => ({
+      flex: 0.8,
+      p: { xs: 2.5, sm: 5 },
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 1,
+    }),
+    []
+  );
 
   // Memoized image styles
-  const imageStyles = useMemo(() => ({
-    width: { xs: 150, sm: 200, md: 230 },
-    mb: 0.5,
-  }), []);
+  const imageStyles = useMemo(
+    () => ({
+      width: { xs: 150, sm: 200, md: 230 },
+      mb: 0.5,
+    }),
+    []
+  );
 
   // Memoized title styles
-  const titleStyles = useMemo(() => ({
-    fontSize: { xs: 20, sm: 24 },
-    fontWeight: 700,
-    color: '#000',
-    fontFamily: "'Noto Sans', sans-serif",
-    mb: 2,
-    textAlign: { xs: 'center', md: 'left' },
-  }), []);
+  const titleStyles = useMemo(
+    () => ({
+      fontSize: { xs: 20, sm: 24 },
+      fontWeight: 700,
+      color: '#000',
+      fontFamily: "'Noto Sans', sans-serif",
+      mb: 2,
+      textAlign: { xs: 'center', md: 'left' },
+    }),
+    []
+  );
 
   // Memoized welcome title styles
-  const welcomeTitleStyles = useMemo(() => ({
-    fontSize: { xs: 20, sm: 24 },
-    fontWeight: 700,
-    textAlign: 'center',
-    fontFamily: "'Noto Sans', sans-serif",
-  }), []);
+  const welcomeTitleStyles = useMemo(
+    () => ({
+      fontSize: { xs: 20, sm: 24 },
+      fontWeight: 700,
+      textAlign: 'center',
+      fontFamily: "'Noto Sans', sans-serif",
+    }),
+    []
+  );
 
   // Memoized description styles
-  const descriptionStyles = useMemo(() => ({
-    maxWidth: 450,
-    textAlign: 'center',
-    fontSize: { xs: 14, sm: 16 },
-    fontWeight: 500,
-    color: '#6e6e6eff',
-    lineHeight: 1.4,
-    margin: '0 auto',
-    fontFamily: "'Noto Sans', sans-serif",
-  }), []);
+  const descriptionStyles = useMemo(
+    () => ({
+      maxWidth: 450,
+      textAlign: 'center',
+      fontSize: { xs: 14, sm: 16 },
+      fontWeight: 500,
+      color: '#6e6e6eff',
+      lineHeight: 1.4,
+      margin: '0 auto',
+      fontFamily: "'Noto Sans', sans-serif",
+    }),
+    []
+  );
 
   // Memoized sign up text styles
-  const signUpTextStyles = useMemo(() => ({
-    textAlign: 'center',
-    color: '#000',
-    mt: 1.5,
-    fontSize: 16,
-    fontWeight: 700,
-    fontFamily: FONT_FAMILY,
-  }), []);
+  const signUpTextStyles = useMemo(
+    () => ({
+      textAlign: 'center',
+      color: '#000',
+      mt: 1.5,
+      fontSize: 16,
+      fontWeight: 700,
+      fontFamily: FONT_FAMILY,
+    }),
+    []
+  );
 
   // Check if form is disabled
   const isFormDisabled = isLoading || locked;
@@ -311,44 +362,44 @@ const LoginForm: React.FC = React.memo(() => {
       <Paper elevation={6} sx={paperStyles}>
         {/* Left Side */}
         <Box sx={leftSideStyles}>
-          <Typography sx={titleStyles}>
-            Sign In
-          </Typography>
+          <Typography sx={titleStyles}>Sign In</Typography>
 
           {/* Success Message */}
           {showSuccess && (
-            <Alert severity="success" sx={{ mb: 1.5 }}>
+            <Alert severity='success' sx={{ mb: 1.5 }}>
               Login successful! Redirecting...
             </Alert>
           )}
 
           {/* Error Message */}
           {error && (
-            <Alert 
-              severity="error" 
+            <Alert
+              severity='error'
               sx={{ mb: 1.5 }}
               onClose={() => clearError()}
             >
-              <Typography variant="body2">
-                {error === 'Invalid credentials' ? 'Email or password is incorrect' : error}
+              <Typography variant='body2'>
+                {error === 'Invalid credentials'
+                  ? 'Email or password is incorrect'
+                  : error}
               </Typography>
             </Alert>
           )}
 
           {/* Rate Limit Warning */}
           {locked && (
-            <Alert severity="warning" sx={{ mb: 1.5 }}>
+            <Alert severity='warning' sx={{ mb: 1.5 }}>
               Too many failed attempts. Please try again in 5 minutes.
             </Alert>
           )}
 
           <form onSubmit={handleLogin} noValidate style={formStyles}>
             <TextField
-              id="email-input"
+              id='email-input'
               fullWidth
-              label="Email Address"
-              placeholder="Enter your email"
-              variant="outlined"
+              label='Email Address'
+              placeholder='Enter your email'
+              variant='outlined'
               value={email}
               onChange={handleEmailChange}
               sx={fieldStyles}
@@ -357,23 +408,23 @@ const LoginForm: React.FC = React.memo(() => {
               disabled={isFormDisabled}
               InputProps={{
                 startAdornment: (
-                  <InputAdornment position="start">
+                  <InputAdornment position='start'>
                     <Email sx={{ color: PRIMARY_COLOR }} />
                   </InputAdornment>
                 ),
               }}
-              type="email"
-              autoComplete="email"
+              type='email'
+              autoComplete='email'
               required
-              aria-describedby={errors.email ? "email-error" : undefined}
+              aria-describedby={errors.email ? 'email-error' : undefined}
             />
 
             <TextField
-              id="password-input"
+              id='password-input'
               fullWidth
-              label="Password"
-              placeholder="Enter your password"
-              variant="outlined"
+              label='Password'
+              placeholder='Enter your password'
+              variant='outlined'
               type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={handlePasswordChange}
@@ -383,16 +434,16 @@ const LoginForm: React.FC = React.memo(() => {
               disabled={isFormDisabled}
               InputProps={{
                 startAdornment: (
-                  <InputAdornment position="start">
+                  <InputAdornment position='start'>
                     <Lock sx={{ color: PRIMARY_COLOR }} />
                   </InputAdornment>
                 ),
                 endAdornment: (
-                  <InputAdornment position="end">
+                  <InputAdornment position='end'>
                     <IconButton
                       onClick={toggleShowPassword}
-                      edge="end"
-                      size="small"
+                      edge='end'
+                      size='small'
                       disabled={isFormDisabled}
                       sx={{
                         color: PRIMARY_COLOR,
@@ -404,16 +455,16 @@ const LoginForm: React.FC = React.memo(() => {
                   </InputAdornment>
                 ),
               }}
-              autoComplete="current-password"
+              autoComplete='current-password'
               required
-              aria-describedby={errors.password ? "password-error" : undefined}
+              aria-describedby={errors.password ? 'password-error' : undefined}
             />
 
             <Box sx={checkboxContainerStyles}>
               <FormControlLabel
                 control={
                   <Checkbox
-                    size="small"
+                    size='small'
                     disabled={isFormDisabled}
                     sx={{
                       color: PRIMARY_COLOR,
@@ -436,8 +487,8 @@ const LoginForm: React.FC = React.memo(() => {
               />
 
               <Link
-                component="button"
-                underline="hover"
+                component='button'
+                underline='hover'
                 sx={{ fontWeight: 500 }}
                 onClick={handleForgotPassword}
                 disabled={isFormDisabled}
@@ -447,21 +498,25 @@ const LoginForm: React.FC = React.memo(() => {
             </Box>
 
             <Button
-              type="submit"
+              type='submit'
               fullWidth
-              variant="contained"
+              variant='contained'
               disabled={isFormDisabled || !email.trim() || !password}
               sx={buttonStyles}
             >
-              {isLoading ? <CircularProgress size={22} color="inherit" /> : 'Sign In'}
+              {isLoading ? (
+                <CircularProgress size={22} color='inherit' />
+              ) : (
+                'Sign In'
+              )}
             </Button>
           </form>
 
           <Typography sx={signUpTextStyles}>
             Don't have an account?{' '}
             <Link
-              component="button"
-              underline="hover"
+              component='button'
+              underline='hover'
               sx={{ fontWeight: 700 }}
               onClick={handleSignUp}
               disabled={isFormDisabled}
@@ -472,22 +527,21 @@ const LoginForm: React.FC = React.memo(() => {
         </Box>
 
         {/* Divider — Hidden on Mobile */}
-        {!isMobile && <Divider orientation="vertical" flexItem />}
+        {!isMobile && <Divider orientation='vertical' flexItem />}
 
         {/* Right Side */}
         <Box sx={rightSideStyles}>
           <Box
-            component="img"
-            src="/assets/image.png"
-            alt="Login Illustration"
+            component='img'
+            src='/assets/image.png'
+            alt='Login Illustration'
             sx={imageStyles}
           />
-          <Typography sx={welcomeTitleStyles}>
-            Welcome back!
-          </Typography>
+          <Typography sx={welcomeTitleStyles}>Welcome back!</Typography>
 
           <Typography sx={descriptionStyles}>
-            Please authenticate your login to continue using your personalized tools and services.
+            Please authenticate your login to continue using your personalized
+            tools and services.
           </Typography>
         </Box>
       </Paper>

@@ -1,4 +1,11 @@
-import React, { createContext, useContext, useState, ReactNode, useMemo, useCallback } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useMemo,
+  useCallback,
+} from 'react';
 
 interface SecurityContextProps {
   isAuthenticated: boolean;
@@ -7,9 +14,13 @@ interface SecurityContextProps {
   logout: () => void;
 }
 
-const SecurityContext = createContext<SecurityContextProps | undefined>(undefined);
+const SecurityContext = createContext<SecurityContextProps | undefined>(
+  undefined
+);
 
-export const SecurityProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const SecurityProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRoles, setUserRoles] = useState<string[]>([]);
 
@@ -33,7 +44,11 @@ export const SecurityProvider: React.FC<{ children: ReactNode }> = ({ children }
     [isAuthenticated, userRoles, login, logout]
   );
 
-  return <SecurityContext.Provider value={value}>{children}</SecurityContext.Provider>;
+  return (
+    <SecurityContext.Provider value={value}>
+      {children}
+    </SecurityContext.Provider>
+  );
 };
 
 export const useSecurity = () => {
@@ -42,4 +57,4 @@ export const useSecurity = () => {
     throw new Error('useSecurity must be used within a SecurityProvider');
   }
   return context;
-}; 
+};

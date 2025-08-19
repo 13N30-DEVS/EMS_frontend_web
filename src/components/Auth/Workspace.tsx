@@ -1,4 +1,6 @@
-import React, { useState, ChangeEvent } from 'react';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import {
   Box,
   TextField,
@@ -11,27 +13,34 @@ import {
   IconButton,
   Select,
   MenuItem,
-  FormHelperText
+  FormHelperText,
 } from '@mui/material';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import UploadFileIcon from '@mui/icons-material/UploadFile';
+import React, { useState, ChangeEvent } from 'react';
 
 const roles = ['Admin', 'Member', 'Viewer'];
 
 const WorkspaceSetup: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [form, setForm] = useState<{ workspace: string; name: string; password: string; confirmPassword: string; role: string; logo: File | null }>({
+  const [form, setForm] = useState<{
+    workspace: string;
+    name: string;
+    password: string;
+    confirmPassword: string;
+    role: string;
+    logo: File | null;
+  }>({
     workspace: '',
     name: '',
     password: '',
     confirmPassword: '',
     role: 'Admin',
-    logo: null
+    logo: null,
   });
   const [errors, setErrors] = useState<any>({});
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
@@ -46,15 +55,19 @@ const WorkspaceSetup: React.FC = () => {
   };
 
   const validate = () => {
-    let temp: any = {};
+    const temp: any = {};
     temp.workspace = form.workspace ? '' : 'Workspace name is required';
     temp.name = form.name ? '' : 'Name is required';
     temp.password = form.password ? '' : 'Password is required';
-    temp.confirmPassword = form.confirmPassword ? '' : 'Please confirm your password';
+    temp.confirmPassword = form.confirmPassword
+      ? ''
+      : 'Please confirm your password';
     temp.confirmPassword =
-      form.password === form.confirmPassword ? temp.confirmPassword : 'Passwords do not match';
+      form.password === form.confirmPassword
+        ? temp.confirmPassword
+        : 'Passwords do not match';
     setErrors(temp);
-    return Object.values(temp).every((x) => x === '');
+    return Object.values(temp).every(x => x === '');
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -72,7 +85,7 @@ const WorkspaceSetup: React.FC = () => {
         bgcolor: '#1a1a1a',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
       }}
     >
       <Box
@@ -81,14 +94,31 @@ const WorkspaceSetup: React.FC = () => {
           bgcolor: '#fff',
           borderRadius: 2,
           p: 5,
-          boxShadow: 6
+          boxShadow: 6,
         }}
       >
-        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' } }}>
+        <Box
+          sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' } }}
+        >
           {/* Left Side */}
-          <Box sx={{ display: { xs: 'none', md: 'flex' }, flexDirection: 'column', pr: 4, width: { md: '45%' } }}>
+          <Box
+            sx={{
+              display: { xs: 'none', md: 'flex' },
+              flexDirection: 'column',
+              pr: 4,
+              width: { md: '45%' },
+            }}
+          >
             {/* Placeholder for illustration */}
-            <Box sx={{ mb: 3, minHeight: 180, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Box
+              sx={{
+                mb: 3,
+                minHeight: 180,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
               {/* Place your SVG or image here */}
               <Box
                 sx={{
@@ -100,17 +130,18 @@ const WorkspaceSetup: React.FC = () => {
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontSize: 40,
-                  color: '#4576ab'
+                  color: '#4576ab',
                 }}
               >
-                <UploadFileIcon fontSize="inherit" />
+                <UploadFileIcon fontSize='inherit' />
               </Box>
             </Box>
             {/* Quote */}
-            <Typography variant="body1" sx={{ color: '#222', mb: 1 }}>
-              “Great things in business are never done by one person. They’re done by a team of people.”
+            <Typography variant='body1' sx={{ color: '#222', mb: 1 }}>
+              “Great things in business are never done by one person. They’re
+              done by a team of people.”
             </Typography>
-            <Typography variant="subtitle1" fontWeight="bold">
+            <Typography variant='subtitle1' fontWeight='bold'>
               – Steve Jobs
             </Typography>
           </Box>
@@ -118,16 +149,23 @@ const WorkspaceSetup: React.FC = () => {
           {/* Right Side */}
           <Box sx={{ width: { xs: '100%', md: '55%' } }}>
             <Box sx={{ px: { xs: 0, md: 4 } }}>
-              <Typography variant="h6" fontWeight="bold" gutterBottom>Setup Your Workspace</Typography>
-              <Typography variant="body2" sx={{ color: '#555', mb: 2 }}>
+              <Typography variant='h6' fontWeight='bold' gutterBottom>
+                Setup Your Workspace
+              </Typography>
+              <Typography variant='body2' sx={{ color: '#555', mb: 2 }}>
                 Complete your profile to get started.
               </Typography>
-              <Box component="form" onSubmit={handleSubmit} noValidate sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <Box
+                component='form'
+                onSubmit={handleSubmit}
+                noValidate
+                sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
+              >
                 <TextField
-                  label="Workspace Name"
-                  name="workspace"
+                  label='Workspace Name'
+                  name='workspace'
                   required
-                  variant="outlined"
+                  variant='outlined'
                   fullWidth
                   value={form.workspace}
                   onChange={handleInputChange}
@@ -136,10 +174,10 @@ const WorkspaceSetup: React.FC = () => {
                 />
 
                 <TextField
-                  label="Name"
-                  name="name"
+                  label='Name'
+                  name='name'
                   required
-                  variant="outlined"
+                  variant='outlined'
                   fullWidth
                   value={form.name}
                   onChange={handleInputChange}
@@ -147,75 +185,93 @@ const WorkspaceSetup: React.FC = () => {
                   helperText={errors.name}
                 />
 
-                <FormControl variant="outlined" fullWidth required error={Boolean(errors.password)}>
-                  <InputLabel htmlFor="password">Password</InputLabel>
+                <FormControl
+                  variant='outlined'
+                  fullWidth
+                  required
+                  error={Boolean(errors.password)}
+                >
+                  <InputLabel htmlFor='password'>Password</InputLabel>
                   <OutlinedInput
-                    id="password"
-                    name="password"
+                    id='password'
+                    name='password'
                     type={showPassword ? 'text' : 'password'}
                     value={form.password}
                     onChange={handleInputChange}
                     endAdornment={
-                      <InputAdornment position="end">
+                      <InputAdornment position='end'>
                         <IconButton
-                          aria-label="toggle password visibility"
+                          aria-label='toggle password visibility'
                           onClick={() => setShowPassword(!showPassword)}
-                          edge="end"
+                          edge='end'
                         >
                           {showPassword ? <VisibilityOff /> : <Visibility />}
                         </IconButton>
                       </InputAdornment>
                     }
-                    label="Password"
+                    label='Password'
                   />
                   <FormHelperText>{errors.password}</FormHelperText>
                 </FormControl>
 
-                <FormControl variant="outlined" fullWidth required error={Boolean(errors.confirmPassword)}>
-                  <InputLabel htmlFor="confirmPassword">Confirm Password</InputLabel>
+                <FormControl
+                  variant='outlined'
+                  fullWidth
+                  required
+                  error={Boolean(errors.confirmPassword)}
+                >
+                  <InputLabel htmlFor='confirmPassword'>
+                    Confirm Password
+                  </InputLabel>
                   <OutlinedInput
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    type="password"
+                    id='confirmPassword'
+                    name='confirmPassword'
+                    type='password'
                     value={form.confirmPassword}
                     onChange={handleInputChange}
-                    label="Confirm Password"
+                    label='Confirm Password'
                   />
                   <FormHelperText>{errors.confirmPassword}</FormHelperText>
                 </FormControl>
 
                 <Box>
                   <Button
-                    variant="outlined"
-                    component="label"
+                    variant='outlined'
+                    component='label'
                     startIcon={<UploadFileIcon />}
                     sx={{ mr: 1 }}
                   >
                     Upload Your Logo
                     <input
-                      type="file"
+                      type='file'
                       hidden
-                      accept="image/*"
+                      accept='image/*'
                       onChange={handleFileChange}
                     />
                   </Button>
                   {form.logo && (
-                    <Typography variant="caption" sx={{ ml: 1 }}>{form.logo.name}</Typography>
+                    <Typography variant='caption' sx={{ ml: 1 }}>
+                      {form.logo.name}
+                    </Typography>
                   )}
-                  <Typography variant="caption" display="block" sx={{ mt: 1, color: '#888' }}>
+                  <Typography
+                    variant='caption'
+                    display='block'
+                    sx={{ mt: 1, color: '#888' }}
+                  >
                     Click or drag image here to upload logo (JPG, PNG, max 2MB)
                   </Typography>
                 </Box>
 
                 <FormControl fullWidth>
-                  <InputLabel id="role-label">Select Your Role</InputLabel>
+                  <InputLabel id='role-label'>Select Your Role</InputLabel>
                   <Select
-                    labelId="role-label"
+                    labelId='role-label'
                     value={form.role}
-                    label="Select Your Role"
+                    label='Select Your Role'
                     onChange={handleRoleChange}
                   >
-                    {roles.map((role) => (
+                    {roles.map(role => (
                       <MenuItem key={role} value={role}>
                         {role}
                       </MenuItem>
@@ -224,14 +280,14 @@ const WorkspaceSetup: React.FC = () => {
                 </FormControl>
 
                 <Button
-                  variant="contained"
-                  type="submit"
-                  color="primary"
+                  variant='contained'
+                  type='submit'
+                  color='primary'
                   fullWidth
                   sx={{
                     mt: 1,
                     bgcolor: '#3855b3',
-                    '&:hover': { bgcolor: '#4576ab' }
+                    '&:hover': { bgcolor: '#4576ab' },
                   }}
                 >
                   Next

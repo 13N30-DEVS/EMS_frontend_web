@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { Email } from '@mui/icons-material';
 import {
   Box,
   Paper,
@@ -9,7 +9,7 @@ import {
   InputAdornment,
   Link,
 } from '@mui/material';
-import { Email } from '@mui/icons-material';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const ForgotPassword: React.FC = () => {
@@ -81,67 +81,67 @@ const ForgotPassword: React.FC = () => {
           flexDirection: { xs: 'column', md: 'row' },
           borderRadius: 4,
           overflow: 'hidden',
-          boxShadow: '0 12px 24px rgba(0,0,0,0.12), 0 6px 12px rgba(0,0,0,0.08)',
+          boxShadow:
+            '0 12px 24px rgba(0,0,0,0.12), 0 6px 12px rgba(0,0,0,0.08)',
           backgroundColor: '#fff',
         }}
       >
         {/* Left Section */}
-       <Box
-  sx={{
-    flex: { xs: '1 1 100%', md: '0 0 45%' },
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    p: 4,              // equal padding on all sides
-    backgroundColor: '#fff',
-  }}
->
-  <Box
-    component="img"
-    src="/assets/forgotpage.png"
-    alt="Forgot Password Illustration"
-    sx={{
-      width: 280,
-      mb: 4,
-      filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.1))',
-      borderRadius: 2,
-    }}
-  />
-  <Typography
-    sx={{
-      fontSize: 24,
-      fontWeight: 700,
-      textAlign: 'left',   // left aligned text
-      width: '100%',       // full container width for alignment
-      color: '#171717',
-      fontFamily,
-      mb: 1.5,
-    }}
-  >
-    Forgot Password?
-  </Typography>
-  <Typography
-    sx={{
-      fontSize: 16,
-      fontWeight: 500,
-      color: '#757575',
-      textAlign: 'left',   // left aligned text
-      maxWidth: 370,
-      width: '100%',       // full container width for alignment
-      lineHeight: 1.5,
-      whiteSpace: 'normal', 
-      fontFamily,
-    }}
-  >
-    Forgot your password? Enter your email and we'll send a reset link.
-  </Typography>
-</Box>
-
+        <Box
+          sx={{
+            flex: { xs: '1 1 100%', md: '0 0 45%' },
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            p: 4, // equal padding on all sides
+            backgroundColor: '#fff',
+          }}
+        >
+          <Box
+            component='img'
+            src='/assets/forgotpage.png'
+            alt='Forgot Password Illustration'
+            sx={{
+              width: 280,
+              mb: 4,
+              filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.1))',
+              borderRadius: 2,
+            }}
+          />
+          <Typography
+            sx={{
+              fontSize: 24,
+              fontWeight: 700,
+              textAlign: 'left', // left aligned text
+              width: '100%', // full container width for alignment
+              color: '#171717',
+              fontFamily,
+              mb: 1.5,
+            }}
+          >
+            Forgot Password?
+          </Typography>
+          <Typography
+            sx={{
+              fontSize: 16,
+              fontWeight: 500,
+              color: '#757575',
+              textAlign: 'left', // left aligned text
+              maxWidth: 370,
+              width: '100%', // full container width for alignment
+              lineHeight: 1.5,
+              whiteSpace: 'normal',
+              fontFamily,
+            }}
+          >
+            Forgot your password? Enter your email and we'll send a reset link.
+          </Typography>
+        </Box>
 
         {/* Divider */}
         <Divider
-          orientation="vertical"
+          orientation='vertical'
           flexItem
           sx={{
             display: { xs: 'none', md: 'block' },
@@ -160,7 +160,7 @@ const ForgotPassword: React.FC = () => {
             backgroundColor: '#fff',
           }}
         >
-       <Typography
+          <Typography
             sx={{
               fontSize: 24,
               fontWeight: 700,
@@ -173,60 +173,62 @@ const ForgotPassword: React.FC = () => {
             Reset Password
           </Typography>
 
-        <Typography
-  sx={{
-    fontSize: 16,
-    fontWeight: 500,
-    color: '#888',
-    fontFamily,
-    mb: 3,
-    maxWidth: 360,  // smaller width to enforce wrapping
-    whiteSpace: 'normal', // allow text to wrap
-    textAlign: 'left', // optional, aligns text left
-  }}
->
-  Instructions to reset your password will be sent to your email.
-</Typography>
-
+          <Typography
+            sx={{
+              fontSize: 16,
+              fontWeight: 500,
+              color: '#888',
+              fontFamily,
+              mb: 3,
+              maxWidth: 360, // smaller width to enforce wrapping
+              whiteSpace: 'normal', // allow text to wrap
+              textAlign: 'left', // optional, aligns text left
+            }}
+          >
+            Instructions to reset your password will be sent to your email.
+          </Typography>
 
           <TextField
-            id="email-input"
+            id='email-input'
             fullWidth
-            label="Email Address"
-            placeholder="Enter your email"
-            variant="outlined"
+            label='Email Address'
+            placeholder='Enter your email'
+            variant='outlined'
             value={email}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setEmail(e.target.value)
+            }
             sx={fieldStyles}
             InputProps={{
               startAdornment: (
-                <InputAdornment position="start">
+                <InputAdornment position='start'>
                   <Email sx={{ color: primaryColor }} />
                 </InputAdornment>
               ),
             }}
-            type="email"
-            autoComplete="email"
+            type='email'
+            autoComplete='email'
             required
           />
 
           <Button
-  disabled={!isEmailValid}
-  fullWidth
-  variant="contained"
-  sx={{
-    backgroundColor: !isEmailValid ? '#dddddd' : primaryColor,
-    color: !isEmailValid ? '#888' : '#fff',
-    fontWeight: 700,
-    py: 1.6,
-    borderRadius: 1.2,
-    boxShadow: !isEmailValid ? 'none' : `0 4px 18px 0 ${primaryColor}20`,
-    textTransform: 'none'
-  }}
->
-  Send Reset Link
-</Button>
-
+            disabled={!isEmailValid}
+            fullWidth
+            variant='contained'
+            sx={{
+              backgroundColor: !isEmailValid ? '#dddddd' : primaryColor,
+              color: !isEmailValid ? '#888' : '#fff',
+              fontWeight: 700,
+              py: 1.6,
+              borderRadius: 1.2,
+              boxShadow: !isEmailValid
+                ? 'none'
+                : `0 4px 18px 0 ${primaryColor}20`,
+              textTransform: 'none',
+            }}
+          >
+            Send Reset Link
+          </Button>
 
           <Typography
             sx={{
@@ -240,10 +242,10 @@ const ForgotPassword: React.FC = () => {
           >
             Remember your password?{' '}
             <Link
-              component="button"
+              component='button'
               onClick={() => navigate('/login')}
-              underline="hover"
-          sx={{ fontWeight: 700,}}
+              underline='hover'
+              sx={{ fontWeight: 700 }}
             >
               Sign In
             </Link>

@@ -3,21 +3,18 @@
 
 export const bundleAnalyzerConfig = {
   // Enable bundle analysis in development
-  enabled: process.env.NODE_ENV === 'development' && process.env.REACT_APP_ANALYZE_BUNDLE === 'true',
-  
+  enabled:
+    process.env.NODE_ENV === 'development' &&
+    process.env.REACT_APP_ANALYZE_BUNDLE === 'true',
+
   // Bundle size thresholds (in KB)
   thresholds: {
     warning: 500, // 500KB
-    error: 1000,  // 1MB
+    error: 1000, // 1MB
   },
-  
+
   // Lazy loaded chunks to monitor
-  lazyChunks: [
-    'LoginForm',
-    'SignupForm', 
-    'ForgotPassword',
-    'AppLayout',
-  ],
+  lazyChunks: ['LoginForm', 'SignupForm', 'ForgotPassword', 'AppLayout'],
 };
 
 export const analyzeBundleSize = (bundleInfo: any) => {
@@ -29,7 +26,7 @@ export const analyzeBundleSize = (bundleInfo: any) => {
   console.log('📦 Bundle Analysis:', {
     totalSize: `${sizeInKB.toFixed(2)}KB`,
     chunkCount: chunks.length,
-    lazyChunks: chunks.filter((chunk: any) => 
+    lazyChunks: chunks.filter((chunk: any) =>
       bundleAnalyzerConfig.lazyChunks.some(name => chunk.name?.includes(name))
     ),
   });
@@ -51,4 +48,4 @@ export const webpackBundleAnalyzer = {
   openAnalyzer: false,
   generateStatsFile: true,
   statsFilename: 'bundle-stats.json',
-}; 
+};

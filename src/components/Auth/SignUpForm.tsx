@@ -1,4 +1,10 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import {
+  Email,
+  Person,
+  Lock,
+  Visibility,
+  VisibilityOff,
+} from '@mui/icons-material';
 import {
   Box,
   Paper,
@@ -13,8 +19,9 @@ import {
   FormControlLabel,
   Checkbox,
 } from '@mui/material';
-import { Email, Person, Lock, Visibility, VisibilityOff } from '@mui/icons-material';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import { useAuthStore } from '../../store/authStore';
 
 // Memoized constants to prevent recreation
@@ -33,7 +40,7 @@ const SignUpForm: React.FC = React.memo(() => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [showSuccess, setShowSuccess] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
-  
+
   const navigate = useNavigate();
   const { register, isLoading, error, clearError } = useAuthStore();
 
@@ -57,84 +64,96 @@ const SignUpForm: React.FC = React.memo(() => {
 
   // Memoized field styles (same as LoginForm)
   const useFieldStyles = () => {
-    return useMemo(() => ({
-      mb: 3,
-      '& .MuiOutlinedInput-root': {
-        borderRadius: 3,
-        transition: 'all 0.3s ease',
-        backgroundColor: '#fafafa',
-        '&:hover fieldset': { borderColor: PRIMARY_COLOR },
-        '&.Mui-focused fieldset': {
-          borderColor: '#6a8ee0',
-          boxShadow: '0 0 4px rgba(106,142,224,0.2)',
+    return useMemo(
+      () => ({
+        mb: 3,
+        '& .MuiOutlinedInput-root': {
+          borderRadius: 3,
+          transition: 'all 0.3s ease',
+          backgroundColor: '#fafafa',
+          '&:hover fieldset': { borderColor: PRIMARY_COLOR },
+          '&.Mui-focused fieldset': {
+            borderColor: '#6a8ee0',
+            boxShadow: '0 0 4px rgba(106,142,224,0.2)',
+          },
         },
-      },
-      '& .MuiInputBase-input': {
-        padding: '12px 14px',
-        fontFamily: FONT_FAMILY,
-        fontSize: 16,
-        fontWeight: 500,
-        '::placeholder': {
-          fontSize: 13,
-          fontWeight: 500,
-          color: '#888',
-          opacity: 1,
+        '& .MuiInputBase-input': {
+          padding: '12px 14px',
           fontFamily: FONT_FAMILY,
+          fontSize: 16,
+          fontWeight: 500,
+          '::placeholder': {
+            fontSize: 13,
+            fontWeight: 500,
+            color: '#888',
+            opacity: 1,
+            fontFamily: FONT_FAMILY,
+          },
         },
-      },
-      '& .MuiInputLabel-root': {
-        fontSize: 16,
-        fontWeight: 500,
-        fontFamily: FONT_FAMILY,
-        color: '#000',
-      },
-      '& .MuiInputLabel-root.Mui-focused': { color: '#6a8ee0' },
-    }), []);
+        '& .MuiInputLabel-root': {
+          fontSize: 16,
+          fontWeight: 500,
+          fontFamily: FONT_FAMILY,
+          color: '#000',
+        },
+        '& .MuiInputLabel-root.Mui-focused': { color: '#6a8ee0' },
+      }),
+      []
+    );
   };
 
   // Memoized button styles
   const useButtonStyles = () => {
-    return useMemo(() => ({
-      py: 1.2,
-      backgroundColor: PRIMARY_COLOR,
-      '&:hover': { backgroundColor: '#303F9F' },
-      fontWeight: 700,
-      borderRadius: 2,
-      boxShadow: `0px 4px 10px ${PRIMARY_COLOR}60`,
-      textTransform: 'none' as const,
-      fontSize: 16,
-      minHeight: { xs: 48, sm: 40 }, // Better touch targets on mobile
-    }), []);
+    return useMemo(
+      () => ({
+        py: 1.2,
+        backgroundColor: PRIMARY_COLOR,
+        '&:hover': { backgroundColor: '#303F9F' },
+        fontWeight: 700,
+        borderRadius: 2,
+        boxShadow: `0px 4px 10px ${PRIMARY_COLOR}60`,
+        textTransform: 'none' as const,
+        fontSize: 16,
+        minHeight: { xs: 48, sm: 40 }, // Better touch targets on mobile
+      }),
+      []
+    );
   };
 
   // Memoized container styles
   const useContainerStyles = () => {
-    return useMemo(() => ({
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      px: 3,
-      backgroundImage: `url('/assets/bg.jpg')`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat',
-      fontFamily: FONT_FAMILY,
-    }), []);
+    return useMemo(
+      () => ({
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        px: 3,
+        backgroundImage: `url('/assets/bg.jpg')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        fontFamily: FONT_FAMILY,
+      }),
+      []
+    );
   };
 
   // Memoized paper styles
   const usePaperStyles = () => {
-    return useMemo(() => ({
-      width: '100%',
-      maxWidth: 900,
-      display: 'flex',
-      flexDirection: { xs: 'column', md: 'row' },
-      borderRadius: 4,
-      overflow: 'hidden',
-      boxShadow: '0 12px 24px rgba(0,0,0,0.12), 0 6px 12px rgba(0,0,0,0.08)',
-      backgroundColor: '#fff',
-    }), []);
+    return useMemo(
+      () => ({
+        width: '100%',
+        maxWidth: 900,
+        display: 'flex',
+        flexDirection: { xs: 'column', md: 'row' },
+        borderRadius: 4,
+        overflow: 'hidden',
+        boxShadow: '0 12px 24px rgba(0,0,0,0.12), 0 6px 12px rgba(0,0,0,0.08)',
+        backgroundColor: '#fff',
+      }),
+      []
+    );
   };
 
   const fieldStyles = useFieldStyles();
@@ -145,37 +164,38 @@ const SignUpForm: React.FC = React.memo(() => {
   // Form validation
   const validateForm = useCallback(() => {
     const newErrors: { [key: string]: string } = {};
-    
+
     if (!formData.name.trim()) {
       newErrors.name = 'Full name is required';
     } else if (formData.name.trim().length < 2) {
       newErrors.name = 'Name must be at least 2 characters';
     }
-    
+
     if (!formData.email.trim()) {
       newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email.trim())) {
       newErrors.email = 'Please enter a valid email address';
     }
-    
+
     if (!formData.password) {
       newErrors.password = 'Password is required';
     } else if (formData.password.length < 6) {
       newErrors.password = 'Password must be at least 6 characters';
     } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
-      newErrors.password = 'Password must contain uppercase, lowercase, and number';
+      newErrors.password =
+        'Password must contain uppercase, lowercase, and number';
     }
-    
+
     if (!formData.confirmPassword) {
       newErrors.confirmPassword = 'Please confirm your password';
     } else if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = 'Passwords do not match';
     }
-    
+
     if (!acceptedTerms) {
       newErrors.terms = 'You must accept the terms and conditions';
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   }, [formData, acceptedTerms]);
@@ -186,29 +206,32 @@ const SignUpForm: React.FC = React.memo(() => {
   }, []);
 
   // Handle form submission
-  const handleCreateAccount = useCallback(async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!validateForm()) {
-      return;
-    }
-    
-    try {
-      const success = await register({
-        name: formData.name.trim(),
-        email: formData.email.trim(),
-        password: formData.password,
-        confirmPassword: formData.confirmPassword,
-      });
-      
-      if (success) {
-        setShowSuccess(true);
-        setTimeout(() => navigate('/'), 2000); // Show success message briefly
+  const handleCreateAccount = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
+
+      if (!validateForm()) {
+        return;
       }
-    } catch (err) {
-      // Error is handled by the auth store
-    }
-  }, [formData, validateForm, register, navigate]);
+
+      try {
+        const success = await register({
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          password: formData.password,
+          confirmPassword: formData.confirmPassword,
+        });
+
+        if (success) {
+          setShowSuccess(true);
+          setTimeout(() => navigate('/'), 2000); // Show success message briefly
+        }
+      } catch (err) {
+        // Error is handled by the auth store
+      }
+    },
+    [formData, validateForm, register, navigate]
+  );
 
   // Toggle password visibility
   const togglePasswordVisibility = useCallback(() => {
@@ -242,7 +265,7 @@ const SignUpForm: React.FC = React.memo(() => {
           }}
         >
           <Typography
-            variant="h4"
+            variant='h4'
             sx={{
               fontWeight: 700,
               color: '#000',
@@ -255,7 +278,7 @@ const SignUpForm: React.FC = React.memo(() => {
           </Typography>
 
           <Typography
-            variant="body1"
+            variant='body1'
             sx={{
               color: '#666',
               fontFamily: FONT_FAMILY,
@@ -268,102 +291,98 @@ const SignUpForm: React.FC = React.memo(() => {
 
           {/* Success Message */}
           {showSuccess && (
-            <Alert severity="success" sx={{ mb: 2 }}>
+            <Alert severity='success' sx={{ mb: 2 }}>
               Account created successfully! Redirecting to dashboard...
             </Alert>
           )}
 
           {/* Error Message */}
           {error && (
-            <Alert 
-              severity="error" 
-              sx={{ mb: 2 }}
-              onClose={() => clearError()}
-            >
-              <Typography variant="body2">
-                {error}
-              </Typography>
+            <Alert severity='error' sx={{ mb: 2 }} onClose={() => clearError()}>
+              <Typography variant='body2'>{error}</Typography>
             </Alert>
           )}
 
           <form onSubmit={handleCreateAccount} noValidate>
             <TextField
-              id="name-input"
+              id='name-input'
               fullWidth
-              label="Full Name"
-              placeholder="Enter your full name"
-              variant="outlined"
+              label='Full Name'
+              placeholder='Enter your full name'
+              variant='outlined'
               value={formData.name}
-              onChange={(e) => handleInputChange('name', e.target.value)}
+              onChange={e => handleInputChange('name', e.target.value)}
               sx={fieldStyles}
               error={!!errors.name}
               helperText={errors.name}
               disabled={isFormDisabled}
               InputProps={{
                 startAdornment: (
-                  <InputAdornment position="start">
+                  <InputAdornment position='start'>
                     <Person sx={{ color: PRIMARY_COLOR }} />
                   </InputAdornment>
                 ),
               }}
               required
-              autoComplete="name"
+              autoComplete='name'
             />
 
             <TextField
-              id="email-input"
+              id='email-input'
               fullWidth
-              label="Email Address"
-              placeholder="Enter your email"
-              variant="outlined"
+              label='Email Address'
+              placeholder='Enter your email'
+              variant='outlined'
               value={formData.email}
-              onChange={(e) => handleInputChange('email', e.target.value)}
+              onChange={e => handleInputChange('email', e.target.value)}
               sx={fieldStyles}
               error={!!errors.email}
               helperText={errors.email}
               disabled={isFormDisabled}
               InputProps={{
                 startAdornment: (
-                  <InputAdornment position="start">
+                  <InputAdornment position='start'>
                     <Email sx={{ color: PRIMARY_COLOR }} />
                   </InputAdornment>
                 ),
               }}
-              type="email"
+              type='email'
               required
-              autoComplete="email"
+              autoComplete='email'
             />
 
             <TextField
-              id="password-input"
+              id='password-input'
               fullWidth
-              label="Password"
-              placeholder="Create a strong password"
-              variant="outlined"
+              label='Password'
+              placeholder='Create a strong password'
+              variant='outlined'
               type={showPassword ? 'text' : 'password'}
               value={formData.password}
-              onChange={(e) => handleInputChange('password', e.target.value)}
+              onChange={e => handleInputChange('password', e.target.value)}
               sx={fieldStyles}
               error={!!errors.password}
               helperText={errors.password}
               disabled={isFormDisabled}
               InputProps={{
                 startAdornment: (
-                  <InputAdornment position="start">
+                  <InputAdornment position='start'>
                     <Lock sx={{ color: PRIMARY_COLOR }} />
                   </InputAdornment>
                 ),
                 endAdornment: (
-                  <InputAdornment position="end">
+                  <InputAdornment position='end'>
                     <Button
                       onClick={togglePasswordVisibility}
-                      size="small"
+                      size='small'
                       disabled={isFormDisabled}
                       sx={{
                         color: PRIMARY_COLOR,
                         minWidth: 'auto',
                         p: 1,
-                        '&:hover': { backgroundColor: 'rgba(63, 81, 181, 0.1)' },
+                        '&:hover': {
+                          backgroundColor: 'rgba(63, 81, 181, 0.1)',
+                        },
                       }}
                     >
                       {showPassword ? <VisibilityOff /> : <Visibility />}
@@ -372,39 +391,43 @@ const SignUpForm: React.FC = React.memo(() => {
                 ),
               }}
               required
-              autoComplete="new-password"
+              autoComplete='new-password'
             />
 
             <TextField
-              id="confirm-password-input"
+              id='confirm-password-input'
               fullWidth
-              label="Confirm Password"
-              placeholder="Confirm your password"
-              variant="outlined"
+              label='Confirm Password'
+              placeholder='Confirm your password'
+              variant='outlined'
               type={showConfirmPassword ? 'text' : 'password'}
               value={formData.confirmPassword}
-              onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+              onChange={e =>
+                handleInputChange('confirmPassword', e.target.value)
+              }
               sx={fieldStyles}
               error={!!errors.confirmPassword}
               helperText={errors.confirmPassword}
               disabled={isFormDisabled}
               InputProps={{
                 startAdornment: (
-                  <InputAdornment position="start">
+                  <InputAdornment position='start'>
                     <Lock sx={{ color: PRIMARY_COLOR }} />
                   </InputAdornment>
                 ),
                 endAdornment: (
-                  <InputAdornment position="end">
+                  <InputAdornment position='end'>
                     <Button
                       onClick={toggleConfirmPasswordVisibility}
-                      size="small"
+                      size='small'
                       disabled={isFormDisabled}
                       sx={{
                         color: PRIMARY_COLOR,
                         minWidth: 'auto',
                         p: 1,
-                        '&:hover': { backgroundColor: 'rgba(63, 81, 181, 0.1)' },
+                        '&:hover': {
+                          backgroundColor: 'rgba(63, 81, 181, 0.1)',
+                        },
                       }}
                     >
                       {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
@@ -413,7 +436,7 @@ const SignUpForm: React.FC = React.memo(() => {
                 ),
               }}
               required
-              autoComplete="new-password"
+              autoComplete='new-password'
             />
 
             {/* Terms and Conditions */}
@@ -421,7 +444,7 @@ const SignUpForm: React.FC = React.memo(() => {
               control={
                 <Checkbox
                   checked={acceptedTerms}
-                  onChange={(e) => setAcceptedTerms(e.target.checked)}
+                  onChange={e => setAcceptedTerms(e.target.checked)}
                   disabled={isFormDisabled}
                   sx={{
                     color: PRIMARY_COLOR,
@@ -431,7 +454,7 @@ const SignUpForm: React.FC = React.memo(() => {
               }
               label={
                 <Typography
-                  variant="body2"
+                  variant='body2'
                   sx={{
                     color: errors.terms ? '#d32f2f' : '#666',
                     fontFamily: FONT_FAMILY,
@@ -439,10 +462,10 @@ const SignUpForm: React.FC = React.memo(() => {
                 >
                   I agree to the{' '}
                   <Link
-                    component="button"
-                    underline="hover"
+                    component='button'
+                    underline='hover'
                     sx={{ color: PRIMARY_COLOR, fontWeight: 500 }}
-                    onClick={(e) => e.preventDefault()}
+                    onClick={e => e.preventDefault()}
                   >
                     Terms and Conditions
                   </Link>
@@ -452,24 +475,32 @@ const SignUpForm: React.FC = React.memo(() => {
             />
 
             {errors.terms && (
-              <Typography variant="caption" color="error" sx={{ display: 'block', mb: 2 }}>
+              <Typography
+                variant='caption'
+                color='error'
+                sx={{ display: 'block', mb: 2 }}
+              >
                 {errors.terms}
               </Typography>
             )}
 
             <Button
-              type="submit"
+              type='submit'
               fullWidth
-              variant="contained"
+              variant='contained'
               disabled={isFormDisabled || !acceptedTerms}
               sx={buttonStyles}
             >
-              {isLoading ? <CircularProgress size={22} color="inherit" /> : 'Create Account'}
+              {isLoading ? (
+                <CircularProgress size={22} color='inherit' />
+              ) : (
+                'Create Account'
+              )}
             </Button>
           </form>
 
           <Typography
-            variant="body2"
+            variant='body2'
             sx={{
               textAlign: 'center',
               color: '#666',
@@ -479,8 +510,8 @@ const SignUpForm: React.FC = React.memo(() => {
           >
             Already have an account?{' '}
             <Link
-              component="button"
-              underline="hover"
+              component='button'
+              underline='hover'
               sx={{ color: PRIMARY_COLOR, fontWeight: 500 }}
               onClick={handleSignIn}
               disabled={isFormDisabled}
@@ -491,7 +522,11 @@ const SignUpForm: React.FC = React.memo(() => {
         </Box>
 
         {/* Divider */}
-        <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', md: 'block' } }} />
+        <Divider
+          orientation='vertical'
+          flexItem
+          sx={{ display: { xs: 'none', md: 'block' } }}
+        />
 
         {/* Right Section */}
         <Box
@@ -507,16 +542,16 @@ const SignUpForm: React.FC = React.memo(() => {
           }}
         >
           <Box
-            component="img"
-            src="/assets/signup.png"
-            alt="Sign Up Illustration"
+            component='img'
+            src='/assets/signup.png'
+            alt='Sign Up Illustration'
             sx={{
               width: { xs: 120, sm: 150, md: 180 },
               mb: 1,
             }}
           />
           <Typography
-            variant="h5"
+            variant='h5'
             sx={{
               fontWeight: 700,
               textAlign: 'center',
@@ -527,7 +562,7 @@ const SignUpForm: React.FC = React.memo(() => {
             Welcome to EMS!
           </Typography>
           <Typography
-            variant="body1"
+            variant='body1'
             sx={{
               textAlign: 'center',
               color: '#666',
@@ -536,7 +571,8 @@ const SignUpForm: React.FC = React.memo(() => {
               maxWidth: 300,
             }}
           >
-            Join thousands of professionals managing emergency services efficiently and effectively.
+            Join thousands of professionals managing emergency services
+            efficiently and effectively.
           </Typography>
         </Box>
       </Paper>

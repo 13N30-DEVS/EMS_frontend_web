@@ -1,4 +1,5 @@
 import { toast } from 'react-toastify';
+
 import { HTTP_STATUS } from '../constants/api';
 
 export class AppError extends Error {
@@ -6,7 +7,12 @@ export class AppError extends Error {
   public code?: string;
   public details?: any;
 
-  constructor(message: string, status: number = 500, code?: string, details?: any) {
+  constructor(
+    message: string,
+    status: number = 500,
+    code?: string,
+    details?: any
+  ) {
     super(message);
     this.name = 'AppError';
     this.status = status;
@@ -102,4 +108,4 @@ export const isRetryableError = (error: any): boolean => {
     error.code === 'ERR_NETWORK' ||
     error.code === 'ECONNABORTED'
   );
-}; 
+};

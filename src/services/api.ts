@@ -1,7 +1,12 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+
 import { API_CONFIG, HTTP_STATUS, AUTH_CONFIG } from '../constants/api';
 import { ApiResponse, RequestConfig } from '../types/api';
-import { handleApiError, handleNetworkError, isRetryableError } from '../utils/errorHandler';
+import {
+  handleApiError,
+  handleNetworkError,
+  isRetryableError,
+} from '../utils/errorHandler';
 
 class ApiService {
   private readonly instance: AxiosInstance;
@@ -22,7 +27,7 @@ class ApiService {
   private setupInterceptors(): void {
     // Request interceptor
     this.instance.interceptors.request.use(
-      (config) => {
+      config => {
         // Add auth token if available
         const token = this.getAuthToken();
         if (token && config.headers) {
@@ -31,7 +36,7 @@ class ApiService {
 
         return config;
       },
-      (error) => {
+      error => {
         return Promise.reject(new Error(error));
       }
     );
@@ -40,24 +45,32 @@ class ApiService {
     this.instance.interceptors.response.use(
       (response: AxiosResponse) => {
         // Log successful requests for debugging
-        console.log(`API Request: ${response.config.method?.toUpperCase()} ${response.config.url} - ${response.status}`);
+        console.log(
+          `API Request: ${response.config.method?.toUpperCase()} ${response.config.url} - ${response.status}`
+        );
 
         return response;
       },
-      async (error) => {
+      async error => {
         const originalRequest = error.config;
 
         // Handle retry logic for retryable errors
-        if (isRetryableError(error) && this.retryCount < API_CONFIG.RETRY_ATTEMPTS) {
+        if (
+          isRetryableError(error) &&
+          this.retryCount < API_CONFIG.RETRY_ATTEMPTS
+        ) {
           this.retryCount++;
-          
+
           // Exponential backoff
-          const delay = API_CONFIG.RETRY_DELAY * Math.pow(2, this.retryCount - 1);
-          
-          console.log(`Retrying request (${this.retryCount}/${API_CONFIG.RETRY_ATTEMPTS}) after ${delay}ms`);
-          
+          const delay =
+            API_CONFIG.RETRY_DELAY * Math.pow(2, this.retryCount - 1);
+
+          console.log(
+            `Retrying request (${this.retryCount}/${API_CONFIG.RETRY_ATTEMPTS}) after ${delay}ms`
+          );
+
           await new Promise(resolve => setTimeout(resolve, delay));
-          
+
           return this.instance(originalRequest);
         }
 
@@ -102,7 +115,7 @@ class ApiService {
       };
 
       const response = await this.instance(axiosConfig);
-      
+
       return {
         data: response.data,
         message: response.data?.message,
@@ -125,24 +138,43 @@ class ApiService {
     return this.makeRequest<T>('GET', url, undefined, config);
   }
 
-  async post<T>(url: string, data?: any, config?: RequestConfig): Promise<ApiResponse<T>> {
+  async post<T>(
+    url: string,
+    data?: any,
+    config?: RequestConfig
+  ): Promise<ApiResponse<T>> {
     return this.makeRequest<T>('POST', url, data, config);
   }
 
-  async put<T>(url: string, data?: any, config?: RequestConfig): Promise<ApiResponse<T>> {
+  async put<T>(
+    url: string,
+    data?: any,
+    config?: RequestConfig
+  ): Promise<ApiResponse<T>> {
     return this.makeRequest<T>('PUT', url, data, config);
   }
 
-  async patch<T>(url: string, data?: any, config?: RequestConfig): Promise<ApiResponse<T>> {
+  async patch<T>(
+    url: string,
+    data?: any,
+    config?: RequestConfig
+  ): Promise<ApiResponse<T>> {
     return this.makeRequest<T>('PATCH', url, data, config);
   }
 
-  async delete<T>(url: string, config?: RequestConfig): Promise<ApiResponse<T>> {
+  async delete<T>(
+    url: string,
+    config?: RequestConfig
+  ): Promise<ApiResponse<T>> {
     return this.makeRequest<T>('DELETE', url, undefined, config);
   }
 
   // File upload method
-  async upload<T>(url: string, file: File, onProgress?: (progress: number) => void): Promise<ApiResponse<T>> {
+  async upload<T>(
+    url: string,
+    file: File,
+    onProgress?: (progress: number) => void
+  ): Promise<ApiResponse<T>> {
     const formData = new FormData();
     formData.append('file', file);
 
@@ -151,9 +183,11 @@ class ApiService {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
-        onUploadProgress: (progressEvent) => {
+        onUploadProgress: progressEvent => {
           if (onProgress && progressEvent.total) {
-            const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            const progress = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            );
             onProgress(progress);
           }
         },
@@ -198,4 +232,4 @@ class ApiService {
 export const apiService = new ApiService();
 
 // Export the class for testing purposes
-export default ApiService; 
+export default ApiService;

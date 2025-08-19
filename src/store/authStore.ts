@@ -1,8 +1,9 @@
+import { toast } from 'react-toastify';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { apiService } from '../services/api';
+
 import { API_ENDPOINTS, AUTH_CONFIG } from '../constants/api';
-import { toast } from 'react-toastify';
+import { apiService } from '../services/api';
 
 export interface User {
   id: string;
@@ -65,16 +66,16 @@ export const useAuthStore = create<AuthStore>()(
             API_ENDPOINTS.AUTH.LOGIN,
             {
               emailId: credentials.email,
-              password: credentials.password
+              password: credentials.password,
             }
           );
 
           if (response.success && response.data) {
             const { user, token } = response.data;
-            
+
             // Store token in localStorage using environment variable
             localStorage.setItem(AUTH_CONFIG.TOKEN_KEY, token);
-            
+
             set({
               user,
               token,
@@ -90,9 +91,9 @@ export const useAuthStore = create<AuthStore>()(
           set({ isLoading: false, error: 'Login failed' });
           return false;
         } catch (error: any) {
-          set({ 
-            isLoading: false, 
-            error: error.message ?? 'Login failed' 
+          set({
+            isLoading: false,
+            error: error.message ?? 'Login failed',
           });
           return false;
         }
@@ -109,10 +110,10 @@ export const useAuthStore = create<AuthStore>()(
 
           if (response.success && response.data) {
             const { user, token } = response.data;
-            
+
             // Store token in localStorage using environment variable
             localStorage.setItem(AUTH_CONFIG.TOKEN_KEY, token);
-            
+
             set({
               user,
               token,
@@ -128,9 +129,9 @@ export const useAuthStore = create<AuthStore>()(
           set({ isLoading: false, error: 'Registration failed' });
           return false;
         } catch (error: any) {
-          set({ 
-            isLoading: false, 
-            error: error.message ?? 'Registration failed' 
+          set({
+            isLoading: false,
+            error: error.message ?? 'Registration failed',
           });
           return false;
         }
@@ -140,7 +141,7 @@ export const useAuthStore = create<AuthStore>()(
         // Clear token from localStorage using environment variable
         localStorage.removeItem(AUTH_CONFIG.TOKEN_KEY);
         localStorage.removeItem(AUTH_CONFIG.REFRESH_TOKEN_KEY);
-        
+
         // Call logout API (optional)
         apiService.post(API_ENDPOINTS.AUTH.LOGOUT).catch(() => {
           // Ignore logout API errors
@@ -168,7 +169,7 @@ export const useAuthStore = create<AuthStore>()(
 
           if (response.success && response.data) {
             const { user } = response.data;
-            
+
             set({
               user,
               isLoading: false,
@@ -182,9 +183,9 @@ export const useAuthStore = create<AuthStore>()(
           set({ isLoading: false, error: 'Profile update failed' });
           return false;
         } catch (error: any) {
-          set({ 
-            isLoading: false, 
-            error: error.message ?? 'Profile update failed' 
+          set({
+            isLoading: false,
+            error: error.message ?? 'Profile update failed',
           });
           return false;
         }
@@ -200,7 +201,7 @@ export const useAuthStore = create<AuthStore>()(
 
           if (response.success && response.data) {
             const { user } = response.data;
-            
+
             set({
               user,
               isLoading: false,
@@ -210,9 +211,9 @@ export const useAuthStore = create<AuthStore>()(
             set({ isLoading: false, error: 'Failed to fetch profile' });
           }
         } catch (error: any) {
-          set({ 
-            isLoading: false, 
-            error: error.message ?? 'Failed to fetch profile' 
+          set({
+            isLoading: false,
+            error: error.message ?? 'Failed to fetch profile',
           });
         }
       },
@@ -227,11 +228,11 @@ export const useAuthStore = create<AuthStore>()(
     }),
     {
       name: 'auth-storage',
-      partialize: (state) => ({
+      partialize: state => ({
         user: state.user,
         token: state.token,
         isAuthenticated: state.isAuthenticated,
       }),
     }
   )
-); 
+);
