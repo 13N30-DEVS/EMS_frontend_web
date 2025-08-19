@@ -17,11 +17,8 @@ export const bundleAnalyzerConfig = {
   lazyChunks: ['LoginForm', 'SignupForm', 'ForgotPassword', 'AppLayout'],
 };
 
-export const analyzeBundleSize = (bundleInfo: any) => {
+export const analyzeBundleSize = (_bundleInfo: any) => {
   if (!bundleAnalyzerConfig.enabled) return;
-
-  const { size, chunks } = bundleInfo;
-  const sizeInKB = size / 1024;
 
   // Bundle analysis completed silently
 };

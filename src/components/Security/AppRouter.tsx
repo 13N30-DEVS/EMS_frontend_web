@@ -1,5 +1,5 @@
 import { Box, CircularProgress } from '@mui/material';
-import React, { lazy, Suspense, useMemo, useEffect } from 'react';
+import React, { lazy, Suspense, useMemo } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 import { useAuthStore } from '../../store/authStore';

@@ -3,7 +3,7 @@ import React from 'react';
 export interface Column<T> {
   header: string;
   accessor: keyof T;
-  render?: (value: any, row: T) => React.ReactNode;
+  render?: (_value: any, _row: T) => React.ReactNode;
 }
 
 interface TableProps<T> {

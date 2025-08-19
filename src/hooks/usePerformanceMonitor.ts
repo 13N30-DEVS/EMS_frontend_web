@@ -6,7 +6,7 @@ interface PerformanceMetrics {
   averageRenderTime: number;
 }
 
-export const usePerformanceMonitor = (componentName: string) => {
+export const usePerformanceMonitor = (_componentName: string) => {
   const renderCountRef = useRef(0);
   const lastRenderTimeRef = useRef(performance.now());
   const totalRenderTimeRef = useRef(0);

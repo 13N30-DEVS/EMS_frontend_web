@@ -167,7 +167,7 @@ class ApiService {
   async upload<T>(
     url: string,
     file: File,
-    onProgress?: (progress: number) => void
+    onProgress?: (_progress: number) => void
   ): Promise<ApiResponse<T>> {
     const formData = new FormData();
     formData.append('file', file);
