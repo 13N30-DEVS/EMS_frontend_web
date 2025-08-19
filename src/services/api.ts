@@ -44,11 +44,7 @@ class ApiService {
     // Response interceptor
     this.instance.interceptors.response.use(
       (response: AxiosResponse) => {
-        // Log successful requests for debugging
-        console.log(
-          `API Request: ${response.config.method?.toUpperCase()} ${response.config.url} - ${response.status}`
-        );
-
+        // Request successful
         return response;
       },
       async error => {
@@ -65,9 +61,7 @@ class ApiService {
           const delay =
             API_CONFIG.RETRY_DELAY * Math.pow(2, this.retryCount - 1);
 
-          console.log(
-            `Retrying request (${this.retryCount}/${API_CONFIG.RETRY_ATTEMPTS}) after ${delay}ms`
-          );
+          // Retrying request with exponential backoff
 
           await new Promise(resolve => setTimeout(resolve, delay));
 

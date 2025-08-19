@@ -23,22 +23,7 @@ export const analyzeBundleSize = (bundleInfo: any) => {
   const { size, chunks } = bundleInfo;
   const sizeInKB = size / 1024;
 
-  console.log('📦 Bundle Analysis:', {
-    totalSize: `${sizeInKB.toFixed(2)}KB`,
-    chunkCount: chunks.length,
-    lazyChunks: chunks.filter((chunk: any) =>
-      bundleAnalyzerConfig.lazyChunks.some(name => chunk.name?.includes(name))
-    ),
-  });
-
-  // Warn if bundle is too large
-  if (sizeInKB > bundleAnalyzerConfig.thresholds.error) {
-    console.error('❌ Bundle size exceeds error threshold!');
-  } else if (sizeInKB > bundleAnalyzerConfig.thresholds.warning) {
-    console.warn('⚠️ Bundle size exceeds warning threshold!');
-  } else {
-    console.log('✅ Bundle size is within acceptable limits');
-  }
+  // Bundle analysis completed silently
 };
 
 // Webpack bundle analyzer plugin configuration

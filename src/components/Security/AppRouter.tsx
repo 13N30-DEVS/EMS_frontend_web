@@ -67,14 +67,7 @@ Dashboard.displayName = 'Dashboard';
 const AppRouter: React.FC = React.memo(() => {
   const { isAuthenticated, user, isLoading } = useAuthStore();
 
-  // Debug logging
-  useEffect(() => {
-    console.log('AppRouter - Auth State:', {
-      isAuthenticated,
-      isLoading,
-      user: user?.name,
-    });
-  }, [isAuthenticated, isLoading, user]);
+  // Debug logging removed for production
 
   // Always call these hooks regardless of auth state to prevent hook count mismatches
   const publicRoutes = useMemo(

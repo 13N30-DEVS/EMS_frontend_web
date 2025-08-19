@@ -53,13 +53,7 @@ export const handleApiError = (error: any, customMessage?: string): void => {
   const message = customMessage ?? getErrorMessage(error);
   const status = getErrorStatus(error);
 
-  // Log error for debugging
-  console.error('API Error:', {
-    message,
-    status,
-    error,
-    timestamp: new Date().toISOString(),
-  });
+  // Error handled silently for production
 
   // Show appropriate toast notification
   switch (status) {

@@ -19,18 +19,7 @@ export const usePerformanceMonitor = (componentName: string) => {
     totalRenderTimeRef.current += renderTime;
     lastRenderTimeRef.current = currentTime;
 
-    // Log performance metrics in development
-    if (process.env.NODE_ENV === 'development') {
-      const averageRenderTime =
-        totalRenderTimeRef.current / renderCountRef.current;
-
-      console.log(`🚀 ${componentName} Performance:`, {
-        renderCount: renderCountRef.current,
-        lastRenderTime: `${renderTime.toFixed(2)}ms`,
-        averageRenderTime: `${averageRenderTime.toFixed(2)}ms`,
-        timestamp: new Date().toISOString(),
-      });
-    }
+    // Performance metrics collected silently for production
   });
 
   const getMetrics = (): PerformanceMetrics => ({
