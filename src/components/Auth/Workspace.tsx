@@ -1,4 +1,6 @@
-import React, { useState, ChangeEvent } from 'react';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import {
   Box,
   Typography,

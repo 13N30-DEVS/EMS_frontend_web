@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { Email } from '@mui/icons-material';
 import {
   Box,
   Paper,
@@ -9,7 +9,7 @@ import {
   InputAdornment,
   Link,
 } from '@mui/material';
-import { Email } from '@mui/icons-material';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const ForgotPassword: React.FC = () => {
@@ -65,7 +65,8 @@ const ForgotPassword: React.FC = () => {
           flexDirection: { xs: 'column', md: 'row' },
           borderRadius: 4,
           overflow: 'hidden',
-          boxShadow: '0 12px 24px rgba(0,0,0,0.12), 0 6px 12px rgba(0,0,0,0.08)',
+          boxShadow:
+            '0 12px 24px rgba(0,0,0,0.12), 0 6px 12px rgba(0,0,0,0.08)',
           backgroundColor: '#fff',
         }}
       >
@@ -97,7 +98,7 @@ const ForgotPassword: React.FC = () => {
 
         {/* Divider */}
         <Divider
-          orientation="vertical"
+          orientation='vertical'
           flexItem
           sx={{ display: { xs: 'none', md: 'block' }, backgroundColor: 'rgba(0, 0, 0, 0.08)' }}
         />
@@ -121,23 +122,23 @@ const ForgotPassword: React.FC = () => {
           </Typography>
 
           <TextField
-            id="email-input"
+            id='email-input'
             fullWidth
-            label="Email Address"
-            placeholder="Enter your email"
-            variant="outlined"
+            label='Email Address'
+            placeholder='Enter your email'
+            variant='outlined'
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             sx={fieldStyles}
             InputProps={{
               startAdornment: (
-                <InputAdornment position="start">
+                <InputAdornment position='start'>
                   <Email sx={{ color: primaryColor }} />
                 </InputAdornment>
               ),
             }}
-            type="email"
-            autoComplete="email"
+            type='email'
+            autoComplete='email'
             required
           />
 

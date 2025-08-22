@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+build/
+dist/
+
+# Generated files
+*.min.js
+*.min.css
+*.bundle.js
+
+# Package files
+package-lock.json
+yarn.lock
+
+# Environment files
+.env*
+
+# Logs
+*.log
+
+# Coverage
+coverage/
+
+# Sonar
+.sonar/ 

@@ -1,12 +1,6 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react';
-import {
-  Box,
-  Button,
-  Typography,
-  Paper,
-  Container,
-} from '@mui/material';
 import { Refresh, BugReport } from '@mui/icons-material';
+import { Box, Button, Typography, Paper, Container } from '@mui/material';
+import React, { Component, ErrorInfo, ReactNode } from 'react';
 
 interface Props {
   children: ReactNode;
@@ -30,7 +24,7 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('ErrorBoundary caught an error:', error, errorInfo);
+    // Log error to state for development display
     this.setState({ error, errorInfo });
   }
 
@@ -45,7 +39,7 @@ export class ErrorBoundary extends Component<Props, State> {
       }
 
       return (
-        <Container maxWidth="md">
+        <Container maxWidth='md'>
           <Box
             sx={{
               display: 'flex',
@@ -65,22 +59,23 @@ export class ErrorBoundary extends Component<Props, State> {
               }}
             >
               <BugReport sx={{ fontSize: 64, color: 'error.main', mb: 2 }} />
-              
-              <Typography variant="h4" component="h1" gutterBottom>
+
+              <Typography variant='h4' component='h1' gutterBottom>
                 Oops! Something went wrong
               </Typography>
-              
-              <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-                We're sorry, but something unexpected happened. Please try refreshing the page or contact support if the problem persists.
+
+              <Typography variant='body1' color='text.secondary' sx={{ mb: 3 }}>
+                We're sorry, but something unexpected happened. Please try
+                refreshing the page or contact support if the problem persists.
               </Typography>
 
               {process.env.NODE_ENV === 'development' && this.state.error && (
                 <Box sx={{ mb: 3, textAlign: 'left' }}>
-                  <Typography variant="h6" gutterBottom>
+                  <Typography variant='h6' gutterBottom>
                     Error Details (Development):
                   </Typography>
                   <Paper
-                    variant="outlined"
+                    variant='outlined'
                     sx={{
                       p: 2,
                       backgroundColor: 'grey.50',
@@ -90,11 +85,15 @@ export class ErrorBoundary extends Component<Props, State> {
                       maxHeight: 200,
                     }}
                   >
-                    <Typography variant="body2" component="pre">
+                    <Typography variant='body2' component='pre'>
                       {this.state.error.toString()}
                     </Typography>
                     {this.state.errorInfo && (
-                      <Typography variant="body2" component="pre" sx={{ mt: 1 }}>
+                      <Typography
+                        variant='body2'
+                        component='pre'
+                        sx={{ mt: 1 }}
+                      >
                         {this.state.errorInfo.componentStack}
                       </Typography>
                     )}
@@ -104,15 +103,15 @@ export class ErrorBoundary extends Component<Props, State> {
 
               <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
                 <Button
-                  variant="contained"
+                  variant='contained'
                   startIcon={<Refresh />}
                   onClick={this.handleReset}
                 >
                   Try Again
                 </Button>
-                
+
                 <Button
-                  variant="outlined"
+                  variant='outlined'
                   onClick={() => window.location.reload()}
                 >
                   Refresh Page
@@ -126,4 +125,4 @@ export class ErrorBoundary extends Component<Props, State> {
 
     return this.props.children;
   }
-} 
+}

@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef } from 'react';
 import { toast } from 'react-toastify';
+
 import { apiService } from '../services/api';
 import { ApiResponse } from '../types/api';
 import { handleApiError } from '../utils/errorHandler';
@@ -153,7 +154,7 @@ export function useUpload<T = any>(
   options: UseApiOptions = {}
 ): UseApiReturn<T> & { uploadProgress: number } {
   const [uploadProgress, setUploadProgress] = useState(0);
-  
+
   const uploadApi = useCallback(
     (file: File) => apiService.upload<T>(url, file, setUploadProgress),
     [url]
@@ -165,4 +166,4 @@ export function useUpload<T = any>(
     ...apiHook,
     uploadProgress,
   };
-} 
+}

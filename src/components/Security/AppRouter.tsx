@@ -1,27 +1,46 @@
-import React, { lazy, Suspense, useMemo } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { Box, CircularProgress } from "@mui/material";
+import { Box, CircularProgress } from '@mui/material';
+import React, { lazy, Suspense, useMemo } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
-import { useAuthStore } from "../../store/authStore";
+import { useAuthStore } from '../../store/authStore';
 import DepartmentSelector from "../Workspace/Departments";
 import DesignationSelector from "../Workspace/Designations";
 import ShiftSelector from "../Workspace/Shifts";
 
 
 // Use lazy loading for Dashboard and other components
-const LoginForm = lazy(() => import("../Auth/LoginForm"));
-const SignupForm = lazy(() => import("../Auth/SignUpForm"));
-const ForgotPassword = lazy(() => import("../Auth/ForgotPassword"));
+const LoginForm = lazy(() => import('../Auth/LoginForm'));
+const SignupForm = lazy(() => import('../Auth/SignUpForm'));
+const ForgotPassword = lazy(() => import('../Auth/ForgotPassword'));
 const WorkspaceSetup = lazy(() => import("../Auth/Workspace"));
 const SetupWizard = lazy(() => import("../Workspace/SetupWizard"));
 const AppLayout = lazy(() =>
-  import("../Layout/AppLayout").then((module) => ({ default: module.AppLayout }))
+ 
+  import('../Layout/AppLayout').then((module) => ({ default: module.AppLayout }))
+
 );
 const Dashboard = lazy(() => import("../Dashboard/Dashboard"));
 
 const RouteLoadingSpinner: React.FC = () => (
-  <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh" }}>
+  <Box
+    sx={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      minHeight: '100vh',
+      flexDirection: 'column',
+      gap: 2,
+    }}
+  >
     <CircularProgress size={60} />
+    <Box sx={{ textAlign: 'center' }}>
+      <Box sx={{ fontSize: '1.2rem', fontWeight: 500, color: '#666', mb: 1 }}>
+        Loading...
+      </Box>
+      <Box sx={{ fontSize: '0.9rem', color: '#999' }}>
+        Please wait while we prepare your experience
+      </Box>
+    </Box>
   </Box>
 );
 
@@ -102,12 +121,17 @@ const AppRouter: React.FC = React.memo(() => {
     <BrowserRouter>
       <Routes>
         {currentRoutes.map((route, index) => (
-          <Route key={`${route.path || index}`} path={route.path} element={route.element} />
+          <Route
+            key={`${route.path || index}`}
+            path={route.path}
+            element={route.element}
+          />
         ))}
       </Routes>
     </BrowserRouter>
   );
 });
 
-AppRouter.displayName = "AppRouter";
+AppRouter.displayName = 'AppRouter';
+
 export default AppRouter;

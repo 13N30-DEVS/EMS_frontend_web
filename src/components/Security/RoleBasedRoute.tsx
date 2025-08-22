@@ -16,9 +16,9 @@ interface RoleBasedRouteProps {
 
 const RoleBasedRoute: React.FC<RoleBasedRouteProps> = ({ allowedRoles }) => {
   const { isAuthenticated, userRoles } = useAuth();
-  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  if (!isAuthenticated) return <Navigate to='/login' replace />;
   const hasRole = allowedRoles.some(role => userRoles.includes(role));
-  return hasRole ? <Outlet /> : <Navigate to="/forbidden" replace />;
+  return hasRole ? <Outlet /> : <Navigate to='/forbidden' replace />;
 };
 
-export default RoleBasedRoute; 
+export default RoleBasedRoute;

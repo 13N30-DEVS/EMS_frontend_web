@@ -6,7 +6,7 @@ interface PerformanceMetrics {
   averageRenderTime: number;
 }
 
-export const usePerformanceMonitor = (componentName: string) => {
+export const usePerformanceMonitor = (_componentName: string) => {
   const renderCountRef = useRef(0);
   const lastRenderTimeRef = useRef(performance.now());
   const totalRenderTimeRef = useRef(0);
@@ -14,22 +14,12 @@ export const usePerformanceMonitor = (componentName: string) => {
   useEffect(() => {
     const currentTime = performance.now();
     const renderTime = currentTime - lastRenderTimeRef.current;
-    
+
     renderCountRef.current += 1;
     totalRenderTimeRef.current += renderTime;
     lastRenderTimeRef.current = currentTime;
 
-    // Log performance metrics in development
-    if (process.env.NODE_ENV === 'development') {
-      const averageRenderTime = totalRenderTimeRef.current / renderCountRef.current;
-      
-      console.log(`🚀 ${componentName} Performance:`, {
-        renderCount: renderCountRef.current,
-        lastRenderTime: `${renderTime.toFixed(2)}ms`,
-        averageRenderTime: `${averageRenderTime.toFixed(2)}ms`,
-        timestamp: new Date().toISOString(),
-      });
-    }
+    // Performance metrics collected silently for production
   });
 
   const getMetrics = (): PerformanceMetrics => ({
@@ -39,4 +29,4 @@ export const usePerformanceMonitor = (componentName: string) => {
   });
 
   return { getMetrics };
-}; 
+};
