@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 import {
   Menu as MenuIcon,
-  Dashboard,
+  Dashboard as DashboardIcon,
   Person,
   Settings,
   Logout,
@@ -26,6 +26,7 @@ import {
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAuthStore } from '../../store/authStore';
+import { useNavigate } from 'react-router-dom';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -34,40 +35,23 @@ interface AppLayoutProps {
 
 const drawerWidth = 240;
 
-// Create a custom theme
 const theme = createTheme({
   palette: {
-    primary: {
-      main: '#1976d2',
-    },
-    secondary: {
-      main: '#dc004e',
-    },
-    background: {
-      default: '#f5f5f5',
-    },
+    primary: { main: '#1976d2' },
+    secondary: { main: '#dc004e' },
+    background: { default: '#f5f5f5' },
   },
   typography: {
     fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-    h4: {
-      fontWeight: 600,
-    },
+    h4: { fontWeight: 600 },
   },
   components: {
     MuiButton: {
-      styleOverrides: {
-        root: {
-          textTransform: 'none',
-          borderRadius: 8,
-        },
-      },
+      styleOverrides: { root: { textTransform: 'none', borderRadius: 8 } },
     },
     MuiCard: {
       styleOverrides: {
-        root: {
-          borderRadius: 12,
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-        },
+        root: { borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' },
       },
     },
   },
@@ -76,6 +60,7 @@ const theme = createTheme({
 export const AppLayout: React.FC<AppLayoutProps> = ({ children, title = 'Dashboard' }) => {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const { user, logout } = useAuthStore();
+  const navigate = useNavigate();
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -83,7 +68,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title = 'Dashboa
 
   const menuItems = [
     { text: 'Home', icon: <Home />, path: '/' },
-    { text: 'Dashboard', icon: <Dashboard />, path: '/dashboard' },
+    { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
     { text: 'Profile', icon: <Person />, path: '/profile' },
     { text: 'Settings', icon: <Settings />, path: '/settings' },
   ];
@@ -98,7 +83,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title = 'Dashboa
       <List>
         {menuItems.map((item) => (
           <ListItem key={item.text} disablePadding>
-            <ListItemButton>
+            <ListItemButton onClick={() => navigate(item.path)}>
               <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} />
             </ListItemButton>
@@ -120,8 +105,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title = 'Dashboa
     <ThemeProvider theme={theme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        
-        {/* App Bar */}
+
         <AppBar
           position="fixed"
           sx={{
@@ -150,18 +134,12 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title = 'Dashboa
           </Toolbar>
         </AppBar>
 
-        {/* Navigation Drawer */}
-        <Box
-          component="nav"
-          sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-        >
+        <Box component="nav" sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}>
           <Drawer
             variant="temporary"
             open={mobileOpen}
             onClose={handleDrawerToggle}
-            ModalProps={{
-              keepMounted: true, // Better open performance on mobile.
-            }}
+            ModalProps={{ keepMounted: true }}
             sx={{
               display: { xs: 'block', sm: 'none' },
               '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
@@ -181,7 +159,6 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title = 'Dashboa
           </Drawer>
         </Box>
 
-        {/* Main Content */}
         <Box
           component="main"
           sx={{
@@ -194,7 +171,6 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title = 'Dashboa
           {children}
         </Box>
 
-        {/* Toast Notifications */}
         <ToastContainer
           position="top-right"
           autoClose={5000}
@@ -210,4 +186,5 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title = 'Dashboa
       </Box>
     </ThemeProvider>
   );
-}; 
+};
+

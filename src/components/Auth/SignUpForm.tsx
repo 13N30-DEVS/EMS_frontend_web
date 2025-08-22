@@ -7,17 +7,18 @@ import {
   Button,
   Divider,
   InputAdornment,
-  Link
+  Link,
 } from '@mui/material';
 import { Email } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import FileUploadField from '../Common/FileUploadField';
+import { FILE_RULES } from '../../constants/fileRules';
 
 const SignUpPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const navigate = useNavigate();
 
   const primaryColor = '#3F51B5';
-  const fontFamily = `'Noto Sans', sans-serif`;
 
   const fieldStyles = {
     mb: 3,
@@ -33,7 +34,6 @@ const SignUpPage: React.FC = () => {
     },
     '& .MuiInputBase-input': {
       padding: '12px 14px',
-      fontFamily,
       fontSize: 16,
       fontWeight: 500,
       '::placeholder': {
@@ -41,13 +41,11 @@ const SignUpPage: React.FC = () => {
         fontWeight: 500,
         color: '#888',
         opacity: 1,
-        fontFamily,
       },
     },
     '& .MuiInputLabel-root': {
       fontSize: 16,
       fontWeight: 500,
-      fontFamily,
       color: '#000',
     },
     '& .MuiInputLabel-root.Mui-focused': { color: '#6a8ee0' },
@@ -76,7 +74,6 @@ const SignUpPage: React.FC = () => {
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
-        fontFamily,
       }}
     >
       <Paper
@@ -88,66 +85,63 @@ const SignUpPage: React.FC = () => {
           flexDirection: { xs: 'column', md: 'row' },
           borderRadius: 4,
           overflow: 'hidden',
-          boxShadow: '0 12px 24px rgba(0,0,0,0.12), 0 6px 12px rgba(0,0,0,0.08)',
+          boxShadow: '0 12px 24px rgba(0,0,0,0.12)',
           backgroundColor: '#fff',
         }}
       >
-     
-      {/* Left Section */}
-<Box
-  sx={{
-    flex: { xs: '1 1 100%', md: '0 0 45%' },
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    px: { xs: 0.5, md: 1 },  // much smaller horizontal padding
-    py: { xs: 2, md: 3 },    // keep vertical padding for spacing
-    backgroundColor: '#fff',
-  }}
->
-  <Box
-    component="img"
-    src="/assets/signup.png"
-    alt="Sign Up Illustration"
-    sx={{
-      width: 280,           // slightly smaller for tighter fit
-      mb: 1,
-      filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.1))',
-      borderRadius: 2,
-    }}
-  />
+        {/* Left Section */}
+        <Box
+          sx={{
+            flex: { xs: '1 1 100%', md: '0 0 45%' },
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            px: { xs: 0.5, md: 1 },
+            py: { xs: 2, md: 3 },
+            backgroundColor: '#fff',
+          }}
+        >
+          <Box
+            component="img"
+            src="/assets/signup.png"
+            alt="Sign Up Illustration"
+            sx={{
+              width: 280,
+              mb: 1,
+              filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.1))',
+              borderRadius: 2,
+            }}
+          />
+          <Typography
+            sx={{
+              fontSize: 24,
+              fontWeight: 700,
+              color: '#000',
+              textAlign: 'center',
+              mb: 1,
+              mt: 1,
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            Build something great.
+          </Typography>
+          <Typography
+            sx={{
+              fontSize: 16,
+              fontWeight: 500,
+              color: '#666',
+              textAlign: 'center',
+              maxWidth: 280,
+              overflowWrap: 'break-word',
+            }}
+          >
+            Create your account in a few simple steps.
+          </Typography>
+        </Box>
 
-  <Typography
-    sx={{
-      fontSize: 24,
-      fontWeight: 700,
-      color: '#000',
-      textAlign: 'center',
-      mb: 1,
-      mt: 1,
-      fontFamily,
-    }}
-  >
-   Build something great.
-  </Typography>
-  <Typography
-  sx={{
-    fontSize: 16,
-    fontWeight: 500,
-    color: '#666',
-    maxWidth: '100%',    // allow full width so it can be single line
-    textAlign: 'center',
-    fontFamily,
-    whiteSpace: 'nowrap',   // prevent line breaks
-    overflow: 'hidden',     // hide overflow text if too long
-    textOverflow: 'ellipsis',  // show ellipsis if text is too long
-  }}
->
-  Create your account in a few simple steps.
-</Typography>
-
-</Box>
         {/* Divider */}
         <Divider
           orientation="vertical"
@@ -162,40 +156,28 @@ const SignUpPage: React.FC = () => {
         <Box
           sx={{
             flex: { xs: '1 1 100%', md: '0 0 55%' },
-            p: { xs: 4, md: 5 },
+            p: { xs: 3, md: 5 },
+            backgroundColor: '#fff',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
-            backgroundColor: '#fff',
           }}
         >
-          <Typography
-            sx={{
-              fontSize: 24,
-              fontWeight: 700,
-              color: '#000',
-              mb: 1.5,
-              fontFamily,
-            }}
-          >
+          <Typography variant="h5" sx={{ mb: 2 }}>
             Sign Up
           </Typography>
 
-       <Typography
-  sx={{
-    fontSize: { xs: 13, sm: 16 },
-    fontWeight: 500,
-    color: '#555',
-    mb: 3,
-    lineHeight: 1.5,
-    fontFamily,
-    whiteSpace: 'normal',     // Let text wrap normally
-         
-  }}
->
-  Please enter your email address to create a new account.
-</Typography>
-
+          <Typography
+            sx={{
+              fontSize: { xs: 13, md: 16 },
+              fontWeight: 500,
+              color: '#555',
+              mb: 3,
+              lineHeight: 1.5,
+            }}
+          >
+            Please enter your email address to create a new account.
+          </Typography>
 
           <TextField
             id="email-input"
@@ -204,7 +186,7 @@ const SignUpPage: React.FC = () => {
             placeholder="Enter your email"
             variant="outlined"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={e => setEmail(e.target.value)}
             sx={fieldStyles}
             InputProps={{
               startAdornment: (
@@ -222,19 +204,17 @@ const SignUpPage: React.FC = () => {
             type="button"
             fullWidth
             variant="contained"
+            onClick={handleCreateAccount}
             sx={{
               py: 1.5,
               backgroundColor: primaryColor,
-              '&:hover': { backgroundColor: '#303F9F' },
-              fontWeight: 700,
-              borderRadius: 2,
-              boxShadow: `0px 6px 16px ${primaryColor}80`,
-              textTransform: 'none',
-              fontSize: 16,
-              fontFamily,
               mt: 2,
+              borderRadius: 2,
+              fontWeight: 700,
+              fontSize: 16,
+              textTransform: 'none',
+              boxShadow: `0px 6px 16px ${primaryColor}80`,
             }}
-            onClick={handleCreateAccount}
           >
             Sign Up
           </Button>
@@ -243,10 +223,7 @@ const SignUpPage: React.FC = () => {
             sx={{
               textAlign: 'center',
               mt: 3,
-              fontSize: 16,
               fontWeight: 700,
-              color: '#000000ff',
-              fontFamily,
             }}
           >
             Already have an account?{' '}
@@ -254,8 +231,7 @@ const SignUpPage: React.FC = () => {
               component="button"
               onClick={() => navigate('/login')}
               underline="hover"
-              fontWeight={500}
-             sx={{ fontWeight: 700,}}
+              sx={{ fontWeight: 700 }}
             >
               Sign In
             </Link>

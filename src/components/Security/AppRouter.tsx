@@ -1,59 +1,113 @@
-import React from "react";
+import React, { lazy, Suspense, useMemo } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { Box } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 
-import LoginForm from "../Auth/LoginForm";
-import SignupForm from "../Auth/SignUpForm";
-import WorkspaceSetup from "../Auth/Workspace";
-import SetupWizard from "../Workspace/SetupWizard";
-import ForgotPassword from "../Auth/ForgotPassword";
-import { AppLayout } from "../Layout/AppLayout";
 import { useAuthStore } from "../../store/authStore";
-import Departments from "../Workspace/Departments";
-import Designations from "../Workspace/Designations";
-import Shifts from "../Workspace/Shifts";
+import DepartmentSelector from "../Workspace/Departments";
+import DesignationSelector from "../Workspace/Designations";
+import ShiftSelector from "../Workspace/Shifts";
 
-const AppRouter: React.FC = () => {
-	const { isAuthenticated, user } = useAuthStore();
 
-	return (
-		<BrowserRouter>
-			<Routes>
-				{!isAuthenticated ? (
-					<>
-						<Route path="/login" element={<LoginForm />} />
-						<Route path="/signup" element={<SignupForm />} />
-                        <Route path="/workspace" element={<WorkspaceSetup />} />
-                        <Route path="/workspace/setup" element={<SetupWizard />} />
-                        <Route path="/workspace/departments" element={<Departments />} />
-                        <Route path="/workspace/designations" element={<Designations />} />
-                        <Route path="/workspace/shifts" element={<Shifts />} />
-						<Route path="/forgot-password" element={<ForgotPassword />} />
-						<Route path="*" element={<Navigate to="/login" replace />} />
-					</>
-				) : (
-					<>
-						<Route
-							path="/"
-							element={
-								<AppLayout title="Dashboard">
-									<Box>Dashboard</Box>
-								</AppLayout>
-							}
-						/>
-                        <Route path="/workspace" element={<WorkspaceSetup />} />
-                        <Route path="/workspace/setup" element={<SetupWizard />} />
-                        <Route path="/workspace/departments" element={<Departments />} />
-                        <Route path="/workspace/designations" element={<Designations />} />
-                        <Route path="/workspace/shifts" element={<Shifts />} />
-						<Route path="*" element={<Navigate to="/" replace />} />
-					</>
-				)}
-			</Routes>
-		</BrowserRouter>
-	);
+// Use lazy loading for Dashboard and other components
+const LoginForm = lazy(() => import("../Auth/LoginForm"));
+const SignupForm = lazy(() => import("../Auth/SignUpForm"));
+const ForgotPassword = lazy(() => import("../Auth/ForgotPassword"));
+const WorkspaceSetup = lazy(() => import("../Auth/Workspace"));
+const SetupWizard = lazy(() => import("../Workspace/SetupWizard"));
+const AppLayout = lazy(() =>
+  import("../Layout/AppLayout").then((module) => ({ default: module.AppLayout }))
+);
+const Dashboard = lazy(() => import("../Dashboard/Dashboard"));
+
+const RouteLoadingSpinner: React.FC = () => (
+  <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh" }}>
+    <CircularProgress size={60} />
+  </Box>
+);
+
+const usePublicRoutes = () => {
+  return useMemo(() => [
+      { path: "/login", element: <Suspense fallback={<RouteLoadingSpinner />}><LoginForm /></Suspense> },
+      { path: "/signup", element: <Suspense fallback={<RouteLoadingSpinner />}><SignupForm /></Suspense> },
+      { path: "/workspace", element: <Suspense fallback={<RouteLoadingSpinner />}><WorkspaceSetup /></Suspense> },
+      { path: "/workspace/setup", element: <Suspense fallback={<RouteLoadingSpinner />}><SetupWizard /></Suspense> },
+      { path: "/workspace/departments", element: <DepartmentSelector open onClose={() => {}} onSave={() => {}} selectedDepartments={[]} /> },
+      { path: "/workspace/designations", element: <DesignationSelector open onClose={() => {}} onSave={() => {}} selectedDesignations={[]} /> },
+      { path: "/workspace/shifts", element: <ShiftSelector open onClose={() => {}} onSave={() => {}} selectedShifts={[]} /> },
+      { path: "/forgot-password", element: <Suspense fallback={<RouteLoadingSpinner />}><ForgotPassword /></Suspense> },
+      { path: "*", element: <Navigate to="/login" replace /> },
+    ],
+    []
+  );
 };
 
+const useProtectedRoutes = (userName?: string) => {
+  return useMemo(() => [
+      {
+        path: "/dashboard",
+        element: (
+          <Suspense fallback={<RouteLoadingSpinner />}>
+            <AppLayout title="Dashboard">
+              <Dashboard userName={userName} />
+            </AppLayout>
+          </Suspense>
+        ),
+      },
+      {
+        path: "/workspace",
+        element: (
+          <Suspense fallback={<RouteLoadingSpinner />}>
+            <WorkspaceSetup />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/workspace/setup",
+        element: (
+          <Suspense fallback={<RouteLoadingSpinner />}>
+            <SetupWizard />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/workspace/departments",
+        element: <DepartmentSelector open onClose={() => { }} onSave={() => { }} selectedDepartments={[]} />,
+      },
+      {
+        path: "/workspace/designations",
+        element: <DesignationSelector open onClose={() => { }} onSave={() => { }} selectedDesignations={[]} />,
+      },
+      {
+        path: "/workspace/shifts",
+        element: <ShiftSelector open onClose={() => { }} onSave={() => { }} selectedShifts={[]} />,
+      },
+      {
+        path: "*",
+        element: <Navigate to="/dashboard" replace />,
+      },
+    ],
+    [userName]
+  );
+};
+
+const AppRouter: React.FC = React.memo(() => {
+  const { isAuthenticated, user } = useAuthStore();
+
+  const publicRoutes = usePublicRoutes();
+  const protectedRoutes = useProtectedRoutes(user?.name);
+
+  const currentRoutes = useMemo(() => (isAuthenticated ? protectedRoutes : publicRoutes), [isAuthenticated, protectedRoutes, publicRoutes]);
+
+  return (
+    <BrowserRouter>
+      <Routes>
+        {currentRoutes.map((route, index) => (
+          <Route key={`${route.path || index}`} path={route.path} element={route.element} />
+        ))}
+      </Routes>
+    </BrowserRouter>
+  );
+});
+
+AppRouter.displayName = "AppRouter";
 export default AppRouter;
-
-

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 
+
 // Placeholder for authentication hook
 const useAuth = () => {
   // Replace with actual authentication logic
