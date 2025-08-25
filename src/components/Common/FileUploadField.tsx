@@ -1,6 +1,7 @@
-import React from 'react';
-import { TextField, InputAdornment } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { TextField, InputAdornment } from '@mui/material';
+import React from 'react';
+
 import { useFileUpload } from '../../hooks/useFileUpload';
 import { FileRules, FileInfo } from '../../utils/fileValidation';
 
@@ -21,9 +22,17 @@ export const FileUploadField: React.FC<Props> = ({
   helperWhenEmpty = 'Select a file',
   onChange,
 }) => {
-  const { inputRef, fileInfo, error, open, onChange: handleChange } = useFileUpload(rules);
+  const {
+    inputRef,
+    fileInfo,
+    error,
+    open,
+    onChange: handleChange,
+  } = useFileUpload(rules);
 
-  React.useEffect(() => { onChange?.(fileInfo ?? null); }, [fileInfo, onChange]);
+  React.useEffect(() => {
+    onChange?.(fileInfo ?? null);
+  }, [fileInfo, onChange]);
 
   return (
     <>
@@ -32,11 +41,16 @@ export const FileUploadField: React.FC<Props> = ({
         value={fileInfo?.name ?? ''}
         placeholder={placeholder}
         onClick={open}
-        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } }}
+        onKeyDown={e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            open();
+          }
+        }}
         InputProps={{
           readOnly: true,
           startAdornment: (
-            <InputAdornment position="start">
+            <InputAdornment position='start'>
               <CloudUploadIcon sx={{ color: '#3855b3' }} />
             </InputAdornment>
           ),
@@ -46,10 +60,15 @@ export const FileUploadField: React.FC<Props> = ({
         helperText={error || (fileInfo ? fileInfo.sizeLabel : helperWhenEmpty)}
         fullWidth
       />
-      <input ref={inputRef} type="file" hidden accept={accept} onChange={handleChange} />
+      <input
+        ref={inputRef}
+        type='file'
+        hidden
+        accept={accept}
+        onChange={handleChange}
+      />
     </>
   );
 };
 
 export default FileUploadField;
-

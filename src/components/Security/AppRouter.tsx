@@ -3,25 +3,19 @@ import React, { lazy, Suspense, useMemo } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 import { useAuthStore } from '../../store/authStore';
-import DepartmentSelector from "../Workspace/Departments";
-import DesignationSelector from "../Workspace/Designations";
-import ShiftSelector from "../Workspace/Shifts";
 
-
-// Use lazy loading for Dashboard and other components
 const LoginForm = lazy(() => import('../Auth/LoginForm'));
-const SignupForm = lazy(() => import('../Auth/SignUpForm'));
+const SignupFlow = lazy(() => import('../Auth/SignupFlow'));
+const SignUpForm = lazy(() => import('../Auth/SignUpForm'));
+const WorkspaceSetup = lazy(() => import('../Auth/Workspace'));
+const SetupWizard = lazy(() => import('../Workspace/SetupWizard'));
 const ForgotPassword = lazy(() => import('../Auth/ForgotPassword'));
-const WorkspaceSetup = lazy(() => import("../Auth/Workspace"));
-const SetupWizard = lazy(() => import("../Workspace/SetupWizard"));
 const AppLayout = lazy(() =>
- 
-  import('../Layout/AppLayout').then((module) => ({ default: module.AppLayout }))
-
+  import('../Layout/AppLayout').then(module => ({ default: module.AppLayout }))
 );
-const Dashboard = lazy(() => import("../Dashboard/Dashboard"));
+const Dashboard = lazy(() => import('../Dashboard/Dashboard'));
 
-const RouteLoadingSpinner: React.FC = () => (
+const RouteLoadingSpinner = () => (
   <Box
     sx={{
       display: 'flex',
@@ -44,94 +38,117 @@ const RouteLoadingSpinner: React.FC = () => (
   </Box>
 );
 
-const usePublicRoutes = () => {
-  return useMemo(() => [
-      { path: "/login", element: <Suspense fallback={<RouteLoadingSpinner />}><LoginForm /></Suspense> },
-      { path: "/signup", element: <Suspense fallback={<RouteLoadingSpinner />}><SignupForm /></Suspense> },
-      { path: "/workspace", element: <Suspense fallback={<RouteLoadingSpinner />}><WorkspaceSetup /></Suspense> },
-      { path: "/workspace/setup", element: <Suspense fallback={<RouteLoadingSpinner />}><SetupWizard /></Suspense> },
-      { path: "/workspace/departments", element: <DepartmentSelector open onClose={() => {}} onSave={() => {}} selectedDepartments={[]} /> },
-      { path: "/workspace/designations", element: <DesignationSelector open onClose={() => {}} onSave={() => {}} selectedDesignations={[]} /> },
-      { path: "/workspace/shifts", element: <ShiftSelector open onClose={() => {}} onSave={() => {}} selectedShifts={[]} /> },
-      { path: "/forgot-password", element: <Suspense fallback={<RouteLoadingSpinner />}><ForgotPassword /></Suspense> },
-      { path: "*", element: <Navigate to="/login" replace /> },
-    ],
-    []
-  );
-};
-
-const useProtectedRoutes = (userName?: string) => {
-  return useMemo(() => [
-      {
-        path: "/dashboard",
-        element: (
-          <Suspense fallback={<RouteLoadingSpinner />}>
-            <AppLayout title="Dashboard">
-              <Dashboard userName={userName} />
-            </AppLayout>
-          </Suspense>
-        ),
-      },
-      {
-        path: "/workspace",
-        element: (
-          <Suspense fallback={<RouteLoadingSpinner />}>
-            <WorkspaceSetup />
-          </Suspense>
-        ),
-      },
-      {
-        path: "/workspace/setup",
-        element: (
-          <Suspense fallback={<RouteLoadingSpinner />}>
-            <SetupWizard />
-          </Suspense>
-        ),
-      },
-      {
-        path: "/workspace/departments",
-        element: <DepartmentSelector open onClose={() => { }} onSave={() => { }} selectedDepartments={[]} />,
-      },
-      {
-        path: "/workspace/designations",
-        element: <DesignationSelector open onClose={() => { }} onSave={() => { }} selectedDesignations={[]} />,
-      },
-      {
-        path: "/workspace/shifts",
-        element: <ShiftSelector open onClose={() => { }} onSave={() => { }} selectedShifts={[]} />,
-      },
-      {
-        path: "*",
-        element: <Navigate to="/dashboard" replace />,
-      },
-    ],
-    [userName]
-  );
-};
-
-const AppRouter: React.FC = React.memo(() => {
+const AppRouter = () => {
   const { isAuthenticated, user } = useAuthStore();
 
-  const publicRoutes = usePublicRoutes();
-  const protectedRoutes = useProtectedRoutes(user?.name);
+  // Memoize public and onboarding routes
+  const publicRoutes = useMemo(
+    () => (
+      <>
+        <Route
+          path='/login'
+          element={
+            <Suspense fallback={<RouteLoadingSpinner />}>
+              <LoginForm />
+            </Suspense>
+          }
+        />
+        <Route
+          path='/signup'
+          element={
+            <Suspense fallback={<RouteLoadingSpinner />}>
+              <SignupFlow />
+            </Suspense>
+          }
+        >
+          <Route
+            index
+            element={
+              <Suspense fallback={<RouteLoadingSpinner />}>
+                <SignUpForm />
+              </Suspense>
+            }
+          />
+          <Route
+            path='workspace'
+            element={
+              <Suspense fallback={<RouteLoadingSpinner />}>
+                <WorkspaceSetup />
+              </Suspense>
+            }
+          />
+          {/* Onboarding steps: route each step to SetupWizard */}
+          <Route
+            path='department'
+            element={
+              <Suspense fallback={<RouteLoadingSpinner />}>
+                <SetupWizard />
+              </Suspense>
+            }
+          />
+          <Route
+            path='designation'
+            element={
+              <Suspense fallback={<RouteLoadingSpinner />}>
+                <SetupWizard />
+              </Suspense>
+            }
+          />
+          <Route
+            path='shift'
+            element={
+              <Suspense fallback={<RouteLoadingSpinner />}>
+                <SetupWizard />
+              </Suspense>
+            }
+          />
+          <Route
+            path='allset'
+            element={
+              <Suspense fallback={<RouteLoadingSpinner />}>
+                <SetupWizard />
+              </Suspense>
+            }
+          />
+        </Route>
+        <Route
+          path='/forgot-password'
+          element={
+            <Suspense fallback={<RouteLoadingSpinner />}>
+              <ForgotPassword />
+            </Suspense>
+          }
+        />
+        <Route path='*' element={<Navigate to='/login' replace />} />
+      </>
+    ),
+    []
+  );
 
-  const currentRoutes = useMemo(() => (isAuthenticated ? protectedRoutes : publicRoutes), [isAuthenticated, protectedRoutes, publicRoutes]);
+  const protectedRoutes = useMemo(
+    () => (
+      <>
+        <Route
+          path='/dashboard'
+          element={
+            <Suspense fallback={<RouteLoadingSpinner />}>
+              <AppLayout title='Dashboard'>
+                <Dashboard userName={user?.name} />
+              </AppLayout>
+            </Suspense>
+          }
+        />
+        <Route path='*' element={<Navigate to='/dashboard' replace />} />
+      </>
+    ),
+    [user?.name]
+  );
 
   return (
     <BrowserRouter>
-      <Routes>
-        {currentRoutes.map((route, index) => (
-          <Route
-            key={`${route.path || index}`}
-            path={route.path}
-            element={route.element}
-          />
-        ))}
-      </Routes>
+      <Routes>{isAuthenticated ? protectedRoutes : publicRoutes}</Routes>
     </BrowserRouter>
   );
-});
+};
 
-AppRouter.displayName = 'AppRouter';
-
-export default AppRouter;
+export default React.memo(AppRouter);

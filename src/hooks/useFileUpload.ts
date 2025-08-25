@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+
 import { FileRules, FileInfo, validateFile } from '../utils/fileValidation';
 
 export function useFileUpload(rules: FileRules) {
@@ -15,7 +16,7 @@ export function useFileUpload(rules: FileRules) {
     if (inputRef.current) inputRef.current.value = '';
   };
 
-  const onChange: React.ChangeEventHandler<HTMLInputElement> = async (e) => {
+  const onChange: React.ChangeEventHandler<HTMLInputElement> = async e => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -31,8 +32,12 @@ export function useFileUpload(rules: FileRules) {
     setError(undefined);
   };
 
-  useEffect(() => () => { if (fileInfo?.previewUrl) URL.revokeObjectURL(fileInfo.previewUrl); }, [fileInfo?.previewUrl]);
+  useEffect(
+    () => () => {
+      if (fileInfo?.previewUrl) URL.revokeObjectURL(fileInfo.previewUrl);
+    },
+    [fileInfo?.previewUrl]
+  );
 
   return { inputRef, fileInfo, error, open, clear, onChange };
 }
-

@@ -24,4 +24,3 @@ export const FILE_RULES = {
     maxSizeMB: 10,
   },
 } as const;
-

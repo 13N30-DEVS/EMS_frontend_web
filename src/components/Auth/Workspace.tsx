@@ -1,4 +1,6 @@
-import UploadFileIcon from '@mui/icons-material/UploadFile';
+import BusinessIcon from '@mui/icons-material/Business';
+import LockIcon from '@mui/icons-material/Lock';
+import PersonIcon from '@mui/icons-material/Person';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import {
@@ -12,15 +14,13 @@ import {
   ThemeProvider,
   createTheme,
 } from '@mui/material';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import BusinessIcon from '@mui/icons-material/Business';
-import PersonIcon from '@mui/icons-material/Person';
-import LockIcon from '@mui/icons-material/Lock';
-import FileUploadField from '../Common/FileUploadField';
-import { FILE_RULES } from '../../constants/fileRules';
+import React, { useState, ChangeEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+import { FILE_RULES } from '../../constants/fileRules';
+import { useSignupStore } from '../../store/signupStore';
 import { useWorkspaceStore } from '../../store/workspaceStore';
+import FileUploadField from '../Common/FileUploadField';
 
 const roles = ['Admin'];
 
@@ -41,7 +41,12 @@ const theme = createTheme({
     MuiOutlinedInput: {
       styleOverrides: {
         root: { fontSize: 16 },
-        input: { paddingTop: 12, paddingBottom: 12 },
+        input: {
+          paddingTop: 14,
+          paddingBottom: 14,
+          paddingLeft: 12,
+          paddingRight: 12,
+        },
       },
     },
   },
@@ -49,11 +54,15 @@ const theme = createTheme({
 
 const WorkspaceSetup: React.FC = () => {
   const navigate = useNavigate();
-  const setWorkspaceName = useWorkspaceStore((s) => s.setWorkspaceName);
+  const setWorkspaceName = useWorkspaceStore(s => s.setWorkspaceName);
+  const { setData, reset } = useSignupStore();
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  // 🧹 reset signup store on mount so old values never stick
+  useEffect(() => {
+    reset();
+  }, [reset]);
 
+  // 🆕 always start fresh with empty fields
   const [form, setForm] = useState({
     workspace: '',
     name: '',
@@ -63,30 +72,15 @@ const WorkspaceSetup: React.FC = () => {
     logo: null as File | null,
   });
 
-  // Errors state allows string or undefined values
   const [errors, setErrors] = useState<Record<string, string | undefined>>({});
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-    setErrors((prev) => ({ ...prev, [name]: validateField(name, value) }));
-    if (name === 'password' && form.confirmPassword) {
-      setErrors((prev) => ({
-        ...prev,
-        confirmPassword: validateField('confirmPassword', form.confirmPassword),
-      }));
-    }
-  };
-
-  const handleRoleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setForm((prev) => ({ ...prev, role: value }));
-    setErrors((prev) => ({ ...prev, role: validateField('role', value) }));
-  };
-
+  // 🔒 Strong password regex
   const validatePassword = (password: string) =>
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(password);
 
+  // 🔍 Single field validation
   const validateField = (name: string, value: string): string | undefined => {
     switch (name) {
       case 'workspace':
@@ -108,7 +102,8 @@ const WorkspaceSetup: React.FC = () => {
     }
   };
 
-  const validate = () => {
+  // ✅ Full validation before submit
+  const validate = (): boolean => {
     const tempErrors: Record<string, string | undefined> = {
       workspace: form.workspace ? undefined : 'Workspace name is required',
       name: form.name ? undefined : 'Name is required',
@@ -126,16 +121,39 @@ const WorkspaceSetup: React.FC = () => {
       logo: form.logo ? undefined : 'Logo is required',
     };
     setErrors(tempErrors);
-    return Object.values(tempErrors).every((x) => x === undefined);
+    return Object.values(tempErrors).every(x => x === undefined);
   };
 
+  // 🖊 Handle typing
+  const handleInputChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setForm(prev => ({ ...prev, [name]: value }));
+    setErrors(prev => ({ ...prev, [name]: validateField(name, value) }));
+
+    if (name === 'password' && form.confirmPassword) {
+      setErrors(prev => ({
+        ...prev,
+        confirmPassword: validateField('confirmPassword', form.confirmPassword),
+      }));
+    }
+  };
+
+  // 🧑‍💼 Handle role dropdown
+  const handleRoleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setForm(prev => ({ ...prev, role: value }));
+    setErrors(prev => ({ ...prev, role: validateField('role', value) }));
+  };
+
+  // 🚀 On submit
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validate()) {
-      // ✅ Save workspace name to Zustand (persisted)
       setWorkspaceName(form.workspace);
-      // Continue to the next screen in your onboarding
-      navigate('/workspace/setup');
+      setData(form);
+      navigate('/signup/department');
     }
   };
 
@@ -165,7 +183,7 @@ const WorkspaceSetup: React.FC = () => {
             overflow: 'hidden',
           }}
         >
-          {/* Left side */}
+          {/* Left Side */}
           <Box
             sx={{
               width: { xs: '100%', md: 350 },
@@ -178,30 +196,40 @@ const WorkspaceSetup: React.FC = () => {
             }}
           >
             <Box
-              component="img"
-              src="/assets/workspace.jpg"
-              alt="Workspace Illustration"
+              component='img'
+              src='/assets/workspace.jpg'
+              alt='Workspace Illustration'
               sx={{ width: 270, mb: 3 }}
             />
-            <Typography variant="body1" sx={{ textAlign: 'center', mb: 1, color: '#7e7e7eff' }}>
-              “Great things in business are never done by one person. They’re done by a team of people.”
+            <Typography
+              variant='body1'
+              sx={{ textAlign: 'center', mb: 1, color: '#7e7e7eff' }}
+            >
+              “Great things in business are never done by one person. They’re
+              done by a team of people.”
             </Typography>
-            <Typography variant="body1" sx={{ fontWeight: 'bold', textAlign: 'center' }}>
+            <Typography
+              variant='body1'
+              sx={{ fontWeight: 'bold', textAlign: 'center' }}
+            >
               – Steve Jobs
             </Typography>
           </Box>
 
-          {/* Right side */}
+          {/* Right Side */}
           <Box sx={{ flex: 1, p: 4 }}>
-            <Typography variant="h5" sx={{ mb: 1 }}>
+            <Typography variant='h5' sx={{ mb: 1, textAlign: 'left' }}>
               Setup Your Workspace
             </Typography>
-            <Typography variant="body1" sx={{ color: '#7e7e7eff', mb: 3 }}>
+            <Typography
+              variant='body1'
+              sx={{ color: '#7e7e7eff', mb: 3, textAlign: 'left' }}
+            >
               Complete your profile to get started.
             </Typography>
 
             <Box
-              component="form"
+              component='form'
               onSubmit={handleSubmit}
               sx={{
                 display: 'grid',
@@ -210,43 +238,46 @@ const WorkspaceSetup: React.FC = () => {
                 alignItems: 'start',
               }}
             >
+              {/* Workspace Name */}
               <TextField
-                name="workspace"
-                label="Workspace Name *"
+                name='workspace'
+                label='Workspace Name *'
                 value={form.workspace}
                 onChange={handleInputChange}
-                onBlur={(e) => setErrors((prev) => ({ ...prev, workspace: validateField('workspace', e.target.value) }))}
                 error={!!errors.workspace}
                 helperText={errors.workspace}
                 fullWidth
                 InputProps={{
                   startAdornment: (
-                    <InputAdornment position="start">
+                    <InputAdornment position='start'>
                       <BusinessIcon sx={{ color: '#3855b3' }} />
                     </InputAdornment>
                   ),
                 }}
               />
 
+              {/* Password */}
               <TextField
-                name="password"
-                label="Password *"
+                name='password'
+                label='Password *'
                 type={showPassword ? 'text' : 'password'}
                 value={form.password}
                 onChange={handleInputChange}
-                onBlur={(e) => setErrors((prev) => ({ ...prev, password: validateField('password', e.target.value) }))}
                 error={!!errors.password}
                 helperText={errors.password}
                 fullWidth
                 InputProps={{
                   startAdornment: (
-                    <InputAdornment position="start">
+                    <InputAdornment position='start'>
                       <LockIcon sx={{ color: '#3855b3' }} />
                     </InputAdornment>
                   ),
                   endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton size="small" onClick={() => setShowPassword(!showPassword)}>
+                    <InputAdornment position='end'>
+                      <IconButton
+                        size='small'
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
                         {showPassword ? <VisibilityOff /> : <Visibility />}
                       </IconButton>
                     </InputAdornment>
@@ -254,88 +285,111 @@ const WorkspaceSetup: React.FC = () => {
                 }}
               />
 
+              {/* Name */}
               <TextField
-                name="name"
-                label="Name *"
+                name='name'
+                label='Name *'
                 value={form.name}
                 onChange={handleInputChange}
-                onBlur={(e) => setErrors((prev) => ({ ...prev, name: validateField('name', e.target.value) }))}
                 error={!!errors.name}
                 helperText={errors.name}
                 fullWidth
                 InputProps={{
                   startAdornment: (
-                    <InputAdornment position="start">
+                    <InputAdornment position='start'>
                       <PersonIcon sx={{ color: '#3855b3' }} />
                     </InputAdornment>
                   ),
                 }}
               />
 
+              {/* Confirm Password */}
               <TextField
-                name="confirmPassword"
-                label="Confirm Password *"
+                name='confirmPassword'
+                label='Confirm Password *'
                 type={showConfirmPassword ? 'text' : 'password'}
                 value={form.confirmPassword}
                 onChange={handleInputChange}
-                onBlur={(e) => setErrors((prev) => ({ ...prev, confirmPassword: validateField('confirmPassword', e.target.value) }))}
                 error={!!errors.confirmPassword}
                 helperText={errors.confirmPassword}
                 fullWidth
                 InputProps={{
                   startAdornment: (
-                    <InputAdornment position="start">
+                    <InputAdornment position='start'>
                       <LockIcon sx={{ color: '#3855b3' }} />
                     </InputAdornment>
                   ),
                   endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton size="small" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
-                        {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                    <InputAdornment position='end'>
+                      <IconButton
+                        size='small'
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
+                      >
+                        {showConfirmPassword ? (
+                          <VisibilityOff />
+                        ) : (
+                          <Visibility />
+                        )}
                       </IconButton>
                     </InputAdornment>
                   ),
                 }}
               />
 
+              {/* Upload Logo */}
               <Box sx={{ width: '100%' }}>
                 <FileUploadField
-                  label="Upload Logo"
-                  accept="image/png,image/jpeg"
+                  label='Upload Logo'
+                  accept='image/png,image/jpeg'
                   rules={FILE_RULES.workspaceLogo}
-                  helperWhenEmpty="JPG or PNG only, max 2MB, size 64–1024px"
-                  onChange={(info) => {
-                    setForm((prev) => ({ ...prev, logo: info?.file ?? null }));
-                    setErrors((prev) => ({ ...prev, logo: undefined }));
+                  helperWhenEmpty='JPG or PNG only, max 2MB, size 64–1024px'
+                  onChange={info => {
+                    setForm(prev => ({ ...prev, logo: info?.file ?? null }));
+                    setErrors(prev => ({ ...prev, logo: undefined }));
                   }}
                 />
+                {errors.logo && (
+                  <Typography color='error' variant='caption'>
+                    {errors.logo}
+                  </Typography>
+                )}
               </Box>
 
+              {/* Role */}
               <TextField
                 select
-                label="Select Your Role"
-                name="role"
+                label='Select Your Role'
+                name='role'
                 value={form.role}
                 onChange={handleRoleChange}
-                onBlur={(e) => setErrors((prev) => ({ ...prev, role: validateField('role', e.target.value) }))}
                 error={!!errors.role}
                 helperText={errors.role}
                 fullWidth
               >
-                {roles.map((role) => (
+                {roles.map(role => (
                   <MenuItem key={role} value={role}>
                     {role}
                   </MenuItem>
                 ))}
               </TextField>
 
-              <Box sx={{ display: 'flex', justifyContent: 'flex-start', mt: 4 }}>
+              {/* ✅ Next button */}
+              <Box
+                sx={{
+                  gridColumn: '1 / -1',
+                  mt: 4,
+                  display: 'flex',
+                  justifyContent: { xs: 'center', md: 'flex-start' },
+                }}
+              >
                 <Button
-                  variant="contained"
-                  type="submit"
+                  variant='contained'
+                  type='submit'
                   sx={{
-                    width: '100%',
-                    height: 48,
+                    height: 52,
+                    width: { xs: '100%', md: '48%' },
                     bgcolor: '#3855b3',
                     fontWeight: 700,
                     fontSize: 18,

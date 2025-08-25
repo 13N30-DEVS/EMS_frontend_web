@@ -40,7 +40,6 @@ const useFieldStyles = () => {
       },
       '& .MuiInputBase-input': {
         padding: '10px 12px',
-        fontFamily: FONT_FAMILY,
         fontSize: 14,
         fontWeight: 500,
         '::placeholder': {
@@ -48,13 +47,11 @@ const useFieldStyles = () => {
           fontWeight: 500,
           color: '#888',
           opacity: 1,
-          fontFamily: FONT_FAMILY,
         },
       },
       '& .MuiInputLabel-root': {
         fontSize: 14,
         fontWeight: 500,
-        fontFamily: FONT_FAMILY,
         color: '#000',
       },
       '& .MuiInputLabel-root.Mui-focused': { color: '#6a8ee0' },
@@ -94,7 +91,6 @@ const useContainerStyles = () => {
       backgroundImage: "url('/assets/bg.jpg')",
       backgroundSize: 'cover',
       backgroundPosition: 'center',
-      fontFamily: FONT_FAMILY,
     }),
     []
   );
@@ -347,7 +343,6 @@ const LoginForm: React.FC = React.memo(() => {
       mt: 1.5,
       fontSize: 16,
       fontWeight: 700,
-      fontFamily: FONT_FAMILY,
     }),
     []
   );
@@ -460,13 +455,15 @@ const LoginForm: React.FC = React.memo(() => {
               required
               aria-describedby={errors.password ? 'password-error' : undefined}
             />
-            <Box sx={{
-              display: 'flex',
-              flexDirection: { xs: 'column', sm: 'row' },
-              alignItems: { xs: 'flex-start', sm: 'center' },
-              justifyContent: 'space-between',
-              gap: 1,
-            }}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: { xs: 'column', sm: 'row' },
+                alignItems: { xs: 'flex-start', sm: 'center' },
+                justifyContent: 'space-between',
+                gap: 1,
+              }}
+            >
               <FormControlLabel
                 control={
                   <Checkbox
@@ -479,7 +476,9 @@ const LoginForm: React.FC = React.memo(() => {
                   />
                 }
                 label={
-                  <Typography sx={{ fontWeight: 500, fontSize: 14, color: '#000' }}>
+                  <Typography
+                    sx={{ fontWeight: 500, fontSize: 14, color: '#000' }}
+                  >
                     Remember Me
                   </Typography>
                 }
@@ -509,13 +508,15 @@ const LoginForm: React.FC = React.memo(() => {
               )}
             </Button>
           </form>
-          <Typography sx={{
-            textAlign: 'center',
-            color: '#000',
-            mt: 1.5,
-            fontSize: 16,
-            fontWeight: 700,
-          }}>
+          <Typography
+            sx={{
+              textAlign: 'center',
+              color: '#000',
+              mt: 1.5,
+              fontSize: 16,
+              fontWeight: 700,
+            }}
+          >
             Don't have an account?{' '}
             <Link
               component='button'
@@ -533,38 +534,45 @@ const LoginForm: React.FC = React.memo(() => {
         {!isMobile && <Divider orientation='vertical' flexItem />}
 
         {/* Right Side */}
-        <Box sx={{
-          flex: 0.8,
-          p: { xs: 2.5, sm: 5 },
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: 1,
-        }}>
+        <Box
+          sx={{
+            flex: 0.8,
+            p: { xs: 2.5, sm: 5 },
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 1,
+          }}
+        >
           <Box
             component='img'
             src='/assets/image.png'
             alt='Login Illustration'
             sx={imageStyles}
           />
-          <Typography sx={{
-            fontSize: { xs: 20, sm: 24 },
-            fontWeight: 700,
-            textAlign: 'center',
-          }}>
+          <Typography
+            sx={{
+              fontSize: { xs: 20, sm: 24 },
+              fontWeight: 700,
+              textAlign: 'center',
+            }}
+          >
             Welcome back!
           </Typography>
-          <Typography sx={{
-            maxWidth: 450,
-            textAlign: 'center',
-            fontSize: { xs: 14, sm: 16 },
-            fontWeight: 500,
-            color: '#6e6e6eff',
-            lineHeight: 1.4,
-            margin: '0 auto',
-          }}>
-            Please authenticate your login to continue using your personalized tools and services.
+          <Typography
+            sx={{
+              maxWidth: 450,
+              textAlign: 'center',
+              fontSize: { xs: 14, sm: 16 },
+              fontWeight: 500,
+              color: '#6e6e6eff',
+              lineHeight: 1.4,
+              margin: '0 auto',
+            }}
+          >
+            Please authenticate your login to continue using your personalized
+            tools and services.
           </Typography>
         </Box>
       </Paper>
