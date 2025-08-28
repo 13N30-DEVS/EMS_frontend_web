@@ -9,63 +9,44 @@ import {
   InputAdornment,
   Link,
 } from '@mui/material';
-import React, { useState, useMemo, useCallback } from 'react';
+import type { SxProps, Theme } from '@mui/material/styles';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useSignupStore } from '../../store/signupStore';
-
-const PRIMARY_COLOR = '#3F51B5';
+import { LoadingSpinner } from '../Common/LoadingSpinner';
+import { COMMON_STYLES } from '../Common/SignupFormStyle';
 
 const SignUpForm: React.FC = () => {
   const navigate = useNavigate();
   const { data, setData } = useSignupStore();
   const [email, setEmail] = useState(data.email || '');
-
-  const fieldStyles = useMemo(
-    () => ({
-      mb: 3,
-      '& .MuiOutlinedInput-root': {
-        borderRadius: 3,
-        transition: 'all 0.3s ease',
-        backgroundColor: '#fafafa',
-        '&:hover .MuiOutlinedInput-notchedOutline': {
-          borderColor: PRIMARY_COLOR,
-        },
-        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-          borderColor: '#6a8ee0',
-          boxShadow: '0 0 4px rgba(106,142,224,0.2)',
-        },
-      },
-      '& .MuiInputBase-input': {
-        padding: '12px 14px',
-        fontSize: 16,
-        fontWeight: 500,
-        '::placeholder': {
-          fontSize: 13,
-          fontWeight: 500,
-          color: '#888',
-          opacity: 1,
-        },
-      },
-      '& .MuiInputLabel-root': {
-        fontSize: 16,
-        fontWeight: 500,
-        color: '#000',
-      },
-      '& .MuiInputLabel-root.Mui-focused': { color: '#6a8ee0' },
-    }),
-    []
-  );
+  const [emailError, setEmailError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const isEmailValid = useMemo(() => /\S+@\S+\.\S+/.test(email), [email]);
 
+  // Real-time validation update
+  useEffect(() => {
+    if (email && !isEmailValid) {
+      setEmailError('Please enter a valid work email (e.g., name@company.com)');
+    } else {
+      setEmailError('');
+    }
+  }, [email, isEmailValid]);
+
   const handleCreateAccount = useCallback(() => {
     if (!isEmailValid) {
-      alert('Please enter a valid email address');
+      setEmailError('Please enter a valid email address');
       return;
     }
-    setData({ email });
-    navigate('/signup/workspace');
+    setLoading(true);
+    // Simulate API/network delay for UX
+    setTimeout(() => {
+      setData({ email });
+      setLoading(false);
+      navigate('/signup/workspace'); // Navigate to workspace step
+    }, 1200);
   }, [isEmailValid, email, setData, navigate]);
 
   const handleEmailChange = useCallback(
@@ -74,6 +55,12 @@ const SignUpForm: React.FC = () => {
     },
     []
   );
+
+  // Correctly merge styles using an array to avoid TypeScript errors
+  const buttonStyles: SxProps<Theme> = [
+    COMMON_STYLES.button,
+    loading ? { color: 'transparent' } : {},
+  ];
 
   return (
     <Box
@@ -128,18 +115,18 @@ const SignUpForm: React.FC = () => {
           />
           <Typography
             sx={{
-              fontSize: 24,
+              fontSize: { xs: 20, sm: 22, md: 24 },
               fontWeight: 700,
               color: '#000',
               textAlign: 'center',
               mb: 1,
             }}
           >
-            Build something great.
+            Start your journey with us.
           </Typography>
           <Typography
             sx={{
-              fontSize: 16,
+              fontSize: { xs: 14, sm: 15, md: 16 },
               fontWeight: 500,
               color: '#666',
               textAlign: 'center',
@@ -147,7 +134,8 @@ const SignUpForm: React.FC = () => {
               overflowWrap: 'break-word',
             }}
           >
-            Create your account in a few simple steps.
+            Create your account in just a few guided steps to set up your
+            workspace.
           </Typography>
         </Box>
 
@@ -169,6 +157,7 @@ const SignUpForm: React.FC = () => {
             justifyContent: 'center',
           }}
         >
+          {/* Sign Up Heading */}
           <Typography
             variant='h5'
             sx={{
@@ -177,67 +166,71 @@ const SignUpForm: React.FC = () => {
               color: '#000',
               alignSelf: 'flex-start',
               textAlign: 'left',
+              fontSize: { xs: 20, sm: 22, md: 24 },
             }}
           >
             Sign Up
           </Typography>
 
+          {/* Instruction Text */}
           <Typography
             sx={{
-              fontSize: { xs: 13, md: 16 },
+              fontSize: { xs: 12, sm: 14, md: 16 },
               fontWeight: 500,
               color: '#555',
               mb: 3,
               lineHeight: 1.5,
             }}
           >
-            Please enter your email address to create a new account.
+            Enter a valid email to start. We’ll confirm it before workspace
+            setup.
           </Typography>
 
+          {/* Email Input */}
           <TextField
             id='email-input'
             fullWidth
-            label='Email Address'
-            placeholder='Enter your email'
+            label='Work Email Address'
+            placeholder='name@company.com'
             variant='outlined'
             value={email}
             onChange={handleEmailChange}
-            sx={fieldStyles}
+            sx={COMMON_STYLES.field}
             InputProps={{
               startAdornment: (
                 <InputAdornment position='start'>
-                  <Email sx={{ color: PRIMARY_COLOR }} />
+                  <Email sx={{ color: '#3F51B5' }} />
                 </InputAdornment>
               ),
             }}
             type='email'
             required
+            error={Boolean(emailError)}
+            helperText={emailError}
           />
 
+          {/* Submit Button */}
           <Button
             type='button'
             fullWidth
             variant='contained'
             onClick={handleCreateAccount}
-            sx={{
-              py: 1.5,
-              backgroundColor: PRIMARY_COLOR,
-              mt: 2,
-              borderRadius: 2,
-              fontWeight: 700,
-              fontSize: 16,
-              textTransform: 'none',
-              boxShadow: `0px 6px 16px ${PRIMARY_COLOR}80`,
-            }}
+            disabled={loading}
+            sx={buttonStyles}
           >
-            Sign Up
+            {loading ? (
+              <Box sx={{ width: 24, height: 24, visibility: 'hidden' }} />
+            ) : (
+              'Sign Up'
+            )}
           </Button>
 
+          {/* Link to Sign In */}
           <Typography
             variant='body1'
             sx={{ mt: 3, fontWeight: 700, textAlign: 'center' }}
           >
-            Already have an account?{' '}
+            Already registered?{' '}
             <Link
               component='button'
               onClick={() => navigate('/login')}

@@ -7,7 +7,7 @@ import { useAuthStore } from '../../store/authStore';
 const LoginForm = lazy(() => import('../Auth/LoginForm'));
 const SignupFlow = lazy(() => import('../Auth/SignupFlow'));
 const SignUpForm = lazy(() => import('../Auth/SignUpForm'));
-const WorkspaceSetup = lazy(() => import('../Auth/Workspace'));
+const WorkspaceSetup = lazy(() => import('../Auth/WorkspaceSetup'));
 const SetupWizard = lazy(() => import('../Workspace/SetupWizard'));
 const ForgotPassword = lazy(() => import('../Auth/ForgotPassword'));
 const AppLayout = lazy(() =>
