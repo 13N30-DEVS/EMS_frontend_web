@@ -1,3 +1,4 @@
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 
@@ -7,9 +8,16 @@ import reportWebVitals from './reportWebVitals';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
 const root = createRoot(document.getElementById('root') as HTMLElement);
+const theme = createTheme({
+  typography: {
+    fontFamily: "'Noto Sans', sans-serif",
+  },
+});
 root.render(
   <React.StrictMode>
-    <App />
+    <ThemeProvider theme={theme}>
+      <App />
+    </ThemeProvider>
   </React.StrictMode>
 );
 
