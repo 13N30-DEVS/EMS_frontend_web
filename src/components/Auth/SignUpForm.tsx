@@ -10,12 +10,20 @@ import {
   Link,
 } from '@mui/material';
 import type { SxProps, Theme } from '@mui/material/styles';
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, {
+  useState,
+  useMemo,
+  useCallback,
+  useEffect,
+  useRef,
+} from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useSignupStore } from '../../store/signupStore';
 import { LoadingSpinner } from '../Common/LoadingSpinner';
 import { COMMON_STYLES } from '../Common/SignupFormStyle';
+
+const PRIMARY_COLOR = '#3F51B5';
 
 const SignUpForm: React.FC = () => {
   const navigate = useNavigate();
@@ -24,39 +32,39 @@ const SignUpForm: React.FC = () => {
   const [emailError, setEmailError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const emailInputRef = useRef<HTMLDivElement>(null);
+
   const isEmailValid = useMemo(() => /\S+@\S+\.\S+/.test(email), [email]);
 
-  // Real-time validation update
   useEffect(() => {
-    if (email && !isEmailValid) {
+    if (email && !isEmailValid)
       setEmailError('Please enter a valid work email (e.g., name@company.com)');
-    } else {
-      setEmailError('');
-    }
+    else setEmailError('');
   }, [email, isEmailValid]);
 
-  const handleCreateAccount = useCallback(() => {
+  const handleCreateAccount = useCallback(async () => {
     if (!isEmailValid) {
       setEmailError('Please enter a valid email address');
+      emailInputRef.current?.querySelector('input')?.focus();
       return;
     }
     setLoading(true);
-    // Simulate API/network delay for UX
-    setTimeout(() => {
+    try {
       setData({ email });
+      navigate('/signup/workspace');
+    } catch {
+      setEmailError('Failed to create account. Please try again.');
+      emailInputRef.current?.querySelector('input')?.focus();
+    } finally {
       setLoading(false);
-      navigate('/signup/workspace'); // Navigate to workspace step
-    }, 1200);
+    }
   }, [isEmailValid, email, setData, navigate]);
 
   const handleEmailChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setEmail(e.target.value);
-    },
+    (e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value),
     []
   );
 
-  // Correctly merge styles using an array to avoid TypeScript errors
   const buttonStyles: SxProps<Theme> = [
     COMMON_STYLES.button,
     loading ? { color: 'transparent' } : {},
@@ -106,12 +114,15 @@ const SignUpForm: React.FC = () => {
             component='img'
             src='/assets/signup.png'
             alt='Sign Up Illustration'
+            loading='lazy'
             sx={{
               width: 280,
               mb: 1,
               filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.1))',
               borderRadius: 2,
+              outlineOffset: '2px',
             }}
+            tabIndex={-1}
           />
           <Typography
             sx={{
@@ -171,8 +182,6 @@ const SignUpForm: React.FC = () => {
           >
             Sign Up
           </Typography>
-
-          {/* Instruction Text */}
           <Typography
             sx={{
               fontSize: { xs: 12, sm: 14, md: 16 },
@@ -186,30 +195,43 @@ const SignUpForm: React.FC = () => {
             setup.
           </Typography>
 
-          {/* Email Input */}
-          <TextField
-            id='email-input'
-            fullWidth
-            label='Work Email Address'
-            placeholder='name@company.com'
-            variant='outlined'
-            value={email}
-            onChange={handleEmailChange}
-            sx={COMMON_STYLES.field}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position='start'>
-                  <Email sx={{ color: '#3F51B5' }} />
-                </InputAdornment>
-              ),
-            }}
-            type='email'
-            required
-            error={Boolean(emailError)}
-            helperText={emailError}
-          />
+          <Box ref={emailInputRef} sx={{ width: '100%' }}>
+            <TextField
+              id='email-input'
+              fullWidth
+              label='Work Email Address'
+              placeholder='name@company.com'
+              variant='outlined'
+              value={email}
+              onChange={handleEmailChange}
+              sx={COMMON_STYLES.field}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position='start'>
+                    <Email sx={{ color: PRIMARY_COLOR }} />
+                  </InputAdornment>
+                ),
+                'aria-describedby': emailError ? 'email-error-text' : undefined,
+              }}
+              inputProps={{
+                'aria-label': 'Work Email Address',
+                'aria-invalid': !!emailError,
+              }}
+              type='email'
+              required
+              error={Boolean(emailError)}
+            />
+            {emailError && (
+              <Typography
+                id='email-error-text'
+                role='alert'
+                sx={{ color: '#d32f2f', mt: 0.5, fontSize: 13 }}
+              >
+                {emailError}
+              </Typography>
+            )}
+          </Box>
 
-          {/* Submit Button */}
           <Button
             type='button'
             fullWidth
@@ -217,15 +239,12 @@ const SignUpForm: React.FC = () => {
             onClick={handleCreateAccount}
             disabled={loading}
             sx={buttonStyles}
+            aria-live='polite'
+            aria-busy={loading}
           >
-            {loading ? (
-              <Box sx={{ width: 24, height: 24, visibility: 'hidden' }} />
-            ) : (
-              'Sign Up'
-            )}
+            {loading ? <LoadingSpinner size={24} /> : 'Sign Up'}
           </Button>
 
-          {/* Link to Sign In */}
           <Typography
             variant='body1'
             sx={{ mt: 3, fontWeight: 700, textAlign: 'center' }}
@@ -236,6 +255,8 @@ const SignUpForm: React.FC = () => {
               onClick={() => navigate('/login')}
               underline='hover'
               sx={{ fontWeight: 700 }}
+              tabIndex={0}
+              aria-label='Go to Sign In page'
             >
               Sign In
             </Link>

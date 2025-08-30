@@ -1,4 +1,3 @@
-// WorkspaceForm.tsx
 import BusinessIcon from '@mui/icons-material/Business';
 import LockIcon from '@mui/icons-material/Lock';
 import PersonIcon from '@mui/icons-material/Person';
@@ -22,15 +21,17 @@ import {
 } from '../../hooks/useWorkspaceValidation';
 import FileUploadField from '../Common/FileUploadField';
 
+export interface WorkspaceFormData {
+  workspace: string;
+  name: string;
+  password: string;
+  confirmPassword: string;
+  role: string;
+  logo: File | null;
+}
+
 interface WorkspaceFormProps {
-  onSubmit: (formData: {
-    workspace: string;
-    name: string;
-    password: string;
-    confirmPassword: string;
-    role: string;
-    logo: File | null;
-  }) => void;
+  onSubmit: (formData: WorkspaceFormData) => void;
 }
 
 const WorkspaceForm: React.FC<WorkspaceFormProps> = ({ onSubmit }) => {
@@ -82,9 +83,7 @@ const WorkspaceForm: React.FC<WorkspaceFormProps> = ({ onSubmit }) => {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (validate()) {
-      onSubmit(form);
-    }
+    if (validate()) onSubmit(form);
   };
 
   return (
@@ -98,7 +97,6 @@ const WorkspaceForm: React.FC<WorkspaceFormProps> = ({ onSubmit }) => {
         alignItems: 'start',
       }}
     >
-      {/* Heading and description block - place this above all form fields */}
       <Box
         sx={{
           gridColumn: '1 / -1',
@@ -116,16 +114,11 @@ const WorkspaceForm: React.FC<WorkspaceFormProps> = ({ onSubmit }) => {
           Setup Your Workspace
         </Typography>
         <Typography
-          sx={{
-            color: '#7e7e7e',
-            fontSize: { xs: 13, sm: 15, md: 16 },
-            mt: 0.5,
-          }}
+          sx={{ color: '#7e7e7e', fontSize: { xs: 13, sm: 15, md: 16 }, mt: 1 }}
         >
           Complete your profile to get started.
         </Typography>
       </Box>
-      {/* Workspace Name */}
       <TextField
         name='workspace'
         label='Workspace Name *'
@@ -141,9 +134,25 @@ const WorkspaceForm: React.FC<WorkspaceFormProps> = ({ onSubmit }) => {
             </InputAdornment>
           ),
         }}
+        required
       />
-
-      {/* Password */}
+      <TextField
+        name='name'
+        label='Name *'
+        value={form.name}
+        onChange={handleInputChange}
+        error={!!errors.name}
+        helperText={errors.name}
+        fullWidth
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position='start'>
+              <PersonIcon sx={{ color: '#3855b3' }} />
+            </InputAdornment>
+          ),
+        }}
+        required
+      />
       <TextField
         name='password'
         label='Password *'
@@ -164,33 +173,15 @@ const WorkspaceForm: React.FC<WorkspaceFormProps> = ({ onSubmit }) => {
               <IconButton
                 size='small'
                 onClick={() => setShowPassword(!showPassword)}
+                aria-label='Toggle password visibility'
               >
                 {showPassword ? <VisibilityOff /> : <Visibility />}
               </IconButton>
             </InputAdornment>
           ),
         }}
+        required
       />
-
-      {/* Name */}
-      <TextField
-        name='name'
-        label='Name *'
-        value={form.name}
-        onChange={handleInputChange}
-        error={!!errors.name}
-        helperText={errors.name}
-        fullWidth
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position='start'>
-              <PersonIcon sx={{ color: '#3855b3' }} />
-            </InputAdornment>
-          ),
-        }}
-      />
-
-      {/* Confirm Password */}
       <TextField
         name='confirmPassword'
         label='Confirm Password *'
@@ -211,31 +202,15 @@ const WorkspaceForm: React.FC<WorkspaceFormProps> = ({ onSubmit }) => {
               <IconButton
                 size='small'
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                aria-label='Toggle confirm password visibility'
               >
                 {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
               </IconButton>
             </InputAdornment>
           ),
         }}
+        required
       />
-
-      {/* Upload Logo */}
-      <Box sx={{ width: '100%' }}>
-        <FileUploadField
-          label='Upload Logo'
-          accept='image/png,image/jpeg'
-          rules={FILE_RULES.workspaceLogo}
-          helperWhenEmpty='JPG or PNG only, max 2MB, size 64–1024px'
-          onChange={handleLogoChange}
-        />
-        {errors.logo && (
-          <Typography color='error' variant='caption'>
-            {errors.logo}
-          </Typography>
-        )}
-      </Box>
-
-      {/* Select Your Role */}
       <TextField
         select
         label='Select Your Role'
@@ -245,6 +220,7 @@ const WorkspaceForm: React.FC<WorkspaceFormProps> = ({ onSubmit }) => {
         error={!!errors.role}
         helperText={errors.role}
         fullWidth
+        required
       >
         {roles.map(role => (
           <MenuItem key={role} value={role}>
@@ -252,8 +228,20 @@ const WorkspaceForm: React.FC<WorkspaceFormProps> = ({ onSubmit }) => {
           </MenuItem>
         ))}
       </TextField>
-
-      {/* Submit Button */}
+      <Box sx={{ width: '100%' }}>
+        <FileUploadField
+          label='Upload Logo'
+          accept='image/png,image/jpeg,image/gif,image/webp'
+          rules={FILE_RULES.workspaceLogo}
+          helperWhenEmpty='JPG, PNG, GIF, or WEBP only, max 2MB, size 64–1024px'
+          onChange={handleLogoChange}
+        />
+        {errors.logo && (
+          <Typography color='error' variant='caption'>
+            {errors.logo}
+          </Typography>
+        )}
+      </Box>
       <Box
         sx={{
           gridColumn: '1 / -1',

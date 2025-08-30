@@ -39,8 +39,6 @@ type DepartmentSelectorProps = {
   selectedDepartments: string[];
 };
 
-/* -------------------- Subcomponents -------------------- */
-
 const DepartmentList: React.FC<{
   items: string[];
   selected: string[];
@@ -75,6 +73,7 @@ const DepartmentList: React.FC<{
             bgcolor: '#eff3fd',
             borderRadius: 2,
             fontSize: { xs: 13, sm: 14 },
+            '&:hover': { bgcolor: '#e5ecfb' },
           }}
         >
           Add New Department
@@ -145,13 +144,13 @@ const SelectedChips: React.FC<{
             bgcolor: '#fff',
             color: '#222',
             borderColor: '#e0e0e0',
-            fontSize: { xs: 14, sm: 15 },
-            height: { xs: 28, sm: 30 },
+            fontSize: 14,
+            height: 30,
           }}
         />
       ))
     ) : (
-      <Typography sx={{ color: '#b5b8c5', fontSize: { xs: 14, sm: 15 } }}>
+      <Typography sx={{ color: '#b5b8c5', fontSize: 14 }}>
         No department selected.
       </Typography>
     )}
@@ -242,8 +241,6 @@ const AddDepartmentModal: React.FC<{
   );
 };
 
-/* -------------------- Main Component -------------------- */
-
 const DepartmentSelector: React.FC<DepartmentSelectorProps> = ({
   open,
   onClose,
@@ -256,7 +253,6 @@ const DepartmentSelector: React.FC<DepartmentSelectorProps> = ({
   const [error, setError] = useState('');
   const [addModalOpen, setAddModalOpen] = useState(false);
 
-  // fetch departments on mount
   useEffect(() => {
     fetchDepartments().then(setDepartments);
   }, []);
@@ -293,7 +289,6 @@ const DepartmentSelector: React.FC<DepartmentSelectorProps> = ({
 
   return (
     <>
-      {/* Main Modal */}
       <Modal
         open={open}
         onClose={onClose}
@@ -320,7 +315,6 @@ const DepartmentSelector: React.FC<DepartmentSelectorProps> = ({
               boxShadow: '0 12px 40px #223caa30',
             }}
           >
-            {/* Header */}
             <Box
               sx={{
                 display: 'flex',
@@ -344,9 +338,7 @@ const DepartmentSelector: React.FC<DepartmentSelectorProps> = ({
               </Button>
             </Box>
 
-            {/* Content */}
             <Box sx={{ px: 2, py: 3, bgcolor: '#fafbfc' }}>
-              {/* Search */}
               <Box
                 sx={{
                   border: '1px solid #dadada',
@@ -385,7 +377,6 @@ const DepartmentSelector: React.FC<DepartmentSelectorProps> = ({
                 />
               </Box>
 
-              {/* Selected */}
               <SelectedChips selected={selected} onRemove={handleRemove} />
               {error && (
                 <Alert severity='error' sx={{ mb: 2 }}>
@@ -393,7 +384,6 @@ const DepartmentSelector: React.FC<DepartmentSelectorProps> = ({
                 </Alert>
               )}
 
-              {/* Actions */}
               <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
                 <Button onClick={onClose} variant='outlined'>
                   Cancel
@@ -414,7 +404,6 @@ const DepartmentSelector: React.FC<DepartmentSelectorProps> = ({
         </Box>
       </Modal>
 
-      {/* Add Department Modal */}
       <AddDepartmentModal
         open={addModalOpen}
         onClose={() => setAddModalOpen(false)}

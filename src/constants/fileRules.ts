@@ -1,6 +1,6 @@
 export const FILE_RULES = {
   workspaceLogo: {
-    acceptMime: ['image/png', 'image/jpeg'],
+    acceptMime: ['image/png', 'image/jpeg', 'image/gif', 'image/webp'],
     maxSizeMB: 2,
     minWidth: 64,
     minHeight: 64,

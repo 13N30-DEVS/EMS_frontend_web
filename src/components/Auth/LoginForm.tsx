@@ -16,7 +16,7 @@ import {
   CircularProgress,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useAuthStore } from '../../store/authStore';
@@ -27,6 +27,8 @@ import {
   useButtonStyles,
   useTitleStyles,
 } from '../Common/loginFormStyles';
+
+const PRIMARY_COLOR = '#3F51B5';
 
 const LoginForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -74,16 +76,14 @@ const LoginForm: React.FC = () => {
 
   const validateForm = useCallback(() => {
     const newErrors: { email?: string; password?: string } = {};
-    if (!email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(email.trim())) {
+    if (!email.trim()) newErrors.email = 'Email is required';
+    else if (!/\S+@\S+\.\S+/.test(email.trim()))
       newErrors.email = 'Please enter a valid email address';
-    }
-    if (!password) {
-      newErrors.password = 'Password is required';
-    } else if (password.length < 6) {
+
+    if (!password) newErrors.password = 'Password is required';
+    else if (password.length < 6)
       newErrors.password = 'Password must be at least 6 characters';
-    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   }, [email, password]);
@@ -133,13 +133,11 @@ const LoginForm: React.FC = () => {
           gap={1.5}
         >
           <Typography sx={titleStyles}>Sign In</Typography>
-
           {showSuccess && (
             <Alert severity='success' sx={{ mb: 1.5 }}>
               Login successful! Redirecting...
             </Alert>
           )}
-
           {error && (
             <Alert severity='error' sx={{ mb: 1.5 }} onClose={clearError}>
               <Typography variant='body2'>
@@ -149,7 +147,6 @@ const LoginForm: React.FC = () => {
               </Typography>
             </Alert>
           )}
-
           {locked && (
             <Alert severity='warning' sx={{ mb: 1.5 }}>
               Too many failed attempts. Please try again in 5 minutes.
@@ -183,7 +180,6 @@ const LoginForm: React.FC = () => {
               autoComplete='email'
               required
             />
-
             <TextField
               id='password-input'
               fullWidth
@@ -223,7 +219,6 @@ const LoginForm: React.FC = () => {
               autoComplete='current-password'
               required
             />
-
             <Box
               display='flex'
               flexDirection={{ xs: 'column', sm: 'row' }}
@@ -260,13 +255,12 @@ const LoginForm: React.FC = () => {
                 Forgot Password?
               </Link>
             </Box>
-
             <Button
               type='submit'
               fullWidth
               variant='contained'
               disabled={isFormDisabled || !email.trim() || !password}
-              sx={buttonStyles}
+              sx={useButtonStyles()}
             >
               {isLoading ? (
                 <CircularProgress size={22} color='inherit' />
@@ -275,7 +269,6 @@ const LoginForm: React.FC = () => {
               )}
             </Button>
           </form>
-
           <Typography
             sx={{
               textAlign: 'center',
@@ -297,9 +290,7 @@ const LoginForm: React.FC = () => {
             </Link>
           </Typography>
         </Box>
-
         {!isMobile && <Divider orientation='vertical' flexItem />}
-
         <Box
           flex={0.8}
           p={{ xs: 2.5, sm: 5 }}
@@ -344,5 +335,4 @@ const LoginForm: React.FC = () => {
   );
 };
 
-const PRIMARY_COLOR = '#3F51B5';
 export default React.memo(LoginForm);

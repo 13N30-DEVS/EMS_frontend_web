@@ -1,5 +1,6 @@
-// useWorkspaceValidation.ts
 import { useState, useCallback } from 'react';
+
+import { validatePassword } from '../utils/passwordValidation';
 
 export interface WorkspaceForm {
   workspace: string;
@@ -15,8 +16,6 @@ export interface ValidationErrors {
 }
 
 const roles = ['Admin'];
-
-const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
 
 export const useWorkspaceValidation = (initialForm: WorkspaceForm) => {
   const [form, setForm] = useState<WorkspaceForm>(initialForm);
@@ -38,10 +37,7 @@ export const useWorkspaceValidation = (initialForm: WorkspaceForm) => {
             return 'Name must contain only letters and spaces';
           return undefined;
         case 'password':
-          if (!value) return 'Password is required';
-          return passwordRegex.test(value)
-            ? undefined
-            : 'Password must be at least 8 characters, include uppercase, lowercase, and a number';
+          return validatePassword(value);
         case 'confirmPassword':
           if (!value) return 'Please confirm your password';
           return value === form.password ? undefined : 'Passwords do not match';

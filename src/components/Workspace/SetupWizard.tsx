@@ -4,6 +4,7 @@ import React, { useMemo, useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useWorkspaceStore } from '../../store/workspaceStore';
+import SignupStepper from '../Common/SignupStepper';
 
 import DepartmentSelector from './Departments';
 import DesignationSelector from './Designations';
@@ -90,7 +91,6 @@ const SetupWizard: React.FC = () => {
     setCurrentStep(pathToStep[location.pathname] ?? 0);
   }, [location.pathname]);
 
-  // -------------------- Step Modals & Data --------------------
   const [deptModalOpen, setDeptModalOpen] = useState(false);
   const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
   const [step1Completed, setStep1Completed] = useState(false);
@@ -105,7 +105,6 @@ const SetupWizard: React.FC = () => {
   const [selectedShifts, setSelectedShifts] = useState<Shift[]>([]);
   const [step3Completed, setStep3Completed] = useState(false);
 
-  // -------------------- Styles --------------------
   const outerBoxStyles = useMemo(
     () => ({
       minHeight: 420,
@@ -145,9 +144,14 @@ const SetupWizard: React.FC = () => {
 
   const goToStep = (idx: number) => navigate(stepPathList[idx]);
 
+  const showStepper = false;
   return (
     <Box sx={outerBoxStyles}>
       <Box sx={paperStyles}>
+        <Box sx={{ width: '100%', maxWidth: 900, mx: 'auto', mt: 1, mb: 1 }}>
+          {showStepper && <SignupStepper activeStep={currentStep + 2} />}
+        </Box>
+
         <Box sx={{ mb: 3.5, textAlign: { xs: 'center', md: 'left' } }}>
           <Typography
             variant='h6'
@@ -204,7 +208,6 @@ const SetupWizard: React.FC = () => {
         </Box>
       </Box>
 
-      {/* -------------------- Modals -------------------- */}
       <DepartmentSelector
         open={deptModalOpen}
         onClose={() => setDeptModalOpen(false)}
@@ -218,7 +221,6 @@ const SetupWizard: React.FC = () => {
         }}
         selectedDepartments={selectedDepartments}
       />
-
       <DesignationSelector
         open={desigModalOpen}
         onClose={() => setDesigModalOpen(false)}
@@ -232,7 +234,6 @@ const SetupWizard: React.FC = () => {
         }}
         selectedDesignations={selectedDesignations}
       />
-
       <ShiftSelector
         open={shiftModalOpen}
         onClose={() => setShiftModalOpen(false)}
@@ -250,7 +251,6 @@ const SetupWizard: React.FC = () => {
   );
 };
 
-// -------------------- StepCard Component --------------------
 type StepCardProps = {
   step: number;
   title: string;
